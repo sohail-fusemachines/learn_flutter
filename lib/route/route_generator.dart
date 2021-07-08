@@ -7,6 +7,7 @@ import 'package:fusemachines_app_1/di/application_component.dart';
 
 import 'package:fusemachines_app_1/model/user.dart';
 import 'package:fusemachines_app_1/presentor/view/login.dart';
+import 'package:fusemachines_app_1/presentor/view/splash.dart';
 import 'package:fusemachines_app_1/presentor/view/user_details.dart';
 import 'package:fusemachines_app_1/presentor/view/user_list.dart';
 import 'package:fusemachines_app_1/presentor/viewmodel/login_view_model.dart';
@@ -22,7 +23,10 @@ class RouteGenerator {
 
   Route<dynamic>? getRouteGenerator(RouteSettings settings) {
     switch (settings.name) {
-      case UserList.routeName:
+      case Splash.routeName:
+        return MaterialPageRoute(builder: (_) => SafeArea(child: getIt<Splash>()));
+
+        case UserList.routeName:
         return MaterialPageRoute(
             builder: (context) => SafeArea(
                   child: getIt<UserList>(),

@@ -67,7 +67,7 @@ class _LoginState extends State<Login> {
                 children: [
                   Container(
                     width: double.infinity,
-                    child: Image.asset('assets/graphics/fuse_machines.png'),
+                    child: Image.asset('assets/graphics/fuse_machines.png', width: double.infinity,),
                     margin: EdgeInsets.fromLTRB(0, 0, 0, 8),
                   ),
                   TextFormField(

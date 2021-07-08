@@ -12,12 +12,11 @@ abstract class PeferencesHelper {
 
 @Injectable(as: PeferencesHelper)
 class PeferencesHelperImpl extends PeferencesHelper {
-  Future<SharedPreferences> _preferences = getIt.getAsync<SharedPreferences>();
+  // Future<SharedPreferences> _preferences = getIt.getAsync<SharedPreferences>();
+  Future<SharedPreferences> _preferences = SharedPreferences.getInstance();
 
 
   // PeferencesHelperImpl(this._preferences);
-
-  get token => _preferences.then((value) => value.getString(TOKEN));
 
   @override
   void setToken(String? token){
@@ -31,8 +30,6 @@ class PeferencesHelperImpl extends PeferencesHelper {
   void clear() {
     _preferences.then((value) => value.clear());
   }
-
-
 
   @override
   Future<String?> getToken() {
