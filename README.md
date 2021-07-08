@@ -1,6 +1,6 @@
-# fusemachines_app_1
+# INFO
+To login, use username eve.holt@reqres.in and password cityslicka
 
-A new Flutter project.
 
 ## Getting Started
 
