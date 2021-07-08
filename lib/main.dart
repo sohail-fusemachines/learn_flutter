@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         primaryColor: Colors.blueAccent,
         primarySwatch: Colors.blue,
       ),
-      initialRoute: Splash.routeName,
+      initialRoute: UserList.routeName,
       // this._viewModel.isUserLoggedIn ? UserList.routeName : Login.routeName,
       onGenerateRoute: _routeGenerator.getRouteGenerator,
     );

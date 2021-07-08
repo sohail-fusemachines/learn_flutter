@@ -13,7 +13,7 @@ class UserListViewModel{
   double _currentPage = 0;
 
   Future<List<User>> getListOfUsers([double pageNumber = 1]) => _repo.getListOfUsers(pageNumber).then((value) {
-    _totalPage = value.total;
+    _totalPage = value.totalPages;
     _currentPage = value.page;
     return value.data;
     });

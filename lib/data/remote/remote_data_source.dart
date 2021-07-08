@@ -16,7 +16,7 @@ class RemoteDataSourceImpl extends RemoteDataSource {
   @override
   Future<UserListApiResponse> getListOfUsers(double pageNumber) {
     final Future<http.Response> response =
-        http.get(Uri.parse(BASE_URL + USERS_ENDPOINT + "?page=$pageNumber"));
+        http.get(Uri.parse(BASE_URL + USERS_ENDPOINT + "?page=${pageNumber.toInt()}"));
     return response
         .then((value) => UserListApiResponse.fromJson(jsonDecode(value.body)));
   }

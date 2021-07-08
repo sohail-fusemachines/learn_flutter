@@ -49,16 +49,20 @@ class _UserListState extends State<UserList> {
     viewModel.getListOfUsers().then((List<User> value) {
       setState(() {
         this.isLoading = false;
-        this.listOfUsers = value;
+        this.listOfUsers.addAll(value);
+        print("list of users: ${listOfUsers}");
       });
-      addScrollListenerForListOfUsers();
+
     });
   }
 
   void fetchNextPageOfUsers(){
     viewModel.getNextPageOfUsers()?.then((listOfUsers) {
+
+
       setState(() {
-        listOfUsers.addAll(listOfUsers);
+        this.listOfUsers.addAll(listOfUsers);
+        print("list of users: ${this.listOfUsers}");
       });
     }
     );
@@ -81,6 +85,12 @@ class _UserListState extends State<UserList> {
     viewModel.clearPreferencecs();
     Navigator.of(context).pushNamedAndRemoveUntil(
         Login.routeName, (route) => false);
+  }
+
+  @override
+  void initState() {
+
+    addScrollListenerForListOfUsers();
   }
 
   @override
@@ -145,8 +155,9 @@ class _UserListState extends State<UserList> {
         padding: EdgeInsets.all(8),
         child: Column(
           children: <Widget>[
+
             Expanded(
-              flex: 5,
+              flex: 1,
               child:
                 ListView.builder(itemBuilder: (BuildContext context, int index) {
                  return getUserCard(listOfUsers[index]);
@@ -156,7 +167,6 @@ class _UserListState extends State<UserList> {
             ),
             Align(
               alignment: Alignment.bottomCenter,
-              child: Expanded(
                 child: Column(
                   children: [
                     getButtonThatMatchParent("Fetch Users", () {
@@ -166,8 +176,8 @@ class _UserListState extends State<UserList> {
                       getButtonThatMatchParent("Clear", clearUserList)
                   ],
                 ),
-                flex: 1,
-              ),
+
+
             )
           ],
         ),
