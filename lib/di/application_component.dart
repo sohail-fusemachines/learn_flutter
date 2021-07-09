@@ -10,3 +10,6 @@ final getIt = GetIt.instance;
   initializerName: r'$initGetIt',
 )
 Future<GetIt> configureDependencies()  async => await $initGetIt(getIt);
+
+
+

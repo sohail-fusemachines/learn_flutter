@@ -6,11 +6,11 @@
 
 import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
-import 'package:shared_preferences/shared_preferences.dart' as _i4;
+import 'package:shared_preferences/shared_preferences.dart' as _i3;
 
 import '../app_view_model.dart' as _i8;
 import '../data/local/local_data_source.dart' as _i7;
-import '../data/local/prefs/prefs_helper.dart' as _i3;
+import '../data/local/prefs/prefs_helper.dart' as _i4;
 import '../data/remote/remote_data_source.dart' as _i6;
 import '../main.dart' as _i11;
 import '../presentor/view/dashboard.dart' as _i15;
@@ -28,13 +28,15 @@ import 'modules/shared_pref_module.dart'
 
 // ignore_for_file: lines_longer_than_80_chars
 /// initializes the registration of provided dependencies inside of [GetIt]
-_i1.GetIt $initGetIt(_i1.GetIt get,
-    {String? environment, _i2.EnvironmentFilter? environmentFilter}) {
+Future<_i1.GetIt> $initGetIt(_i1.GetIt get,
+    {String? environment, _i2.EnvironmentFilter? environmentFilter}) async {
   final gh = _i2.GetItHelper(get, environment, environmentFilter);
   final sharedPreferencesModule = _$SharedPreferencesModule();
-  gh.factory<_i3.PeferencesHelper>(() => _i3.PeferencesHelperImpl());
-  gh.factoryAsync<_i4.SharedPreferences>(
-      () => sharedPreferencesModule.sharedPreferences);
+  await gh.factoryAsync<_i3.SharedPreferences>(
+      () => sharedPreferencesModule.prefs,
+      preResolve: true);
+  gh.factory<_i4.PeferencesHelper>(
+      () => _i4.PeferencesHelperImpl(get<_i3.SharedPreferences>()));
   gh.factory<_i5.AppRepository>(() => _i5.AppRepositoryImpl(
       get<_i6.RemoteDataSource>(), get<_i7.LocalDataSource>()));
   gh.factory<_i8.AppViewModel>(
@@ -57,7 +59,7 @@ _i1.GetIt $initGetIt(_i1.GetIt get,
   gh.singleton<_i6.RemoteDataSource>(_i6.RemoteDataSourceImpl());
   gh.singleton<_i12.RouteGenerator>(_i12.RouteGenerator());
   gh.singleton<_i7.LocalDataSource>(
-      _i7.LocalDataSourceImpl(get<_i3.PeferencesHelper>()));
+      _i7.LocalDataSourceImpl(get<_i4.PeferencesHelper>()));
   return get;
 }
 

@@ -26,9 +26,12 @@ class _SplashState extends State<Splash> {
 
   @override
   void initState() {
-    _viewModel.isUserLoggedIn().then((value)
-    => value ? _goToUserList() : _goToLogin()
-    );
+   final isUserLoggedIn =  _viewModel.isUserLoggedIn();
+    if(isUserLoggedIn){
+      _goToUserList();
+    }else {
+      _goToLogin();
+    }
   }
 
   void _goToLogin(){

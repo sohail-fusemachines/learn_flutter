@@ -11,7 +11,7 @@ abstract class AppRepository {
 
   void clearPreferences();
 
-  Future<String?> getToken();
+  String? getToken();
 }
 
 @Injectable(as: AppRepository)
@@ -40,7 +40,7 @@ class AppRepositoryImpl extends AppRepository {
   }
 
   @override
-  Future<String?> getToken() {
+  String? getToken() {
   return _localDataSource.getToken();
   }
 

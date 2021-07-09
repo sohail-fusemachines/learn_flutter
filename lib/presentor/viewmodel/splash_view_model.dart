@@ -7,8 +7,6 @@ class SplashViewModel {
 
   SplashViewModel(this._repository);
 
-  Future<bool> isUserLoggedIn() => _repository
-      .getToken()
-      .then((value) => ((value == null) == false))
-      .catchError((error) => false);
+  bool isUserLoggedIn() => (_repository.getToken() != null);
+
 }
