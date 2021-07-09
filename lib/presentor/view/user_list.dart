@@ -29,16 +29,15 @@ class _UserListState extends State<UserList> {
 
   ScrollController _scrollController = ScrollController();
 
-  void addScrollListenerForListOfUsers(){
-   _scrollController.addListener(() {
-     bool isBottomOfPage = (_scrollController.position.pixels == _scrollController.position.maxScrollExtent);
-     print("scroll pixels: ${_scrollController.position.pixels}");
-     if(isBottomOfPage == true){
-
-       fetchNextPageOfUsers();
-     }
-   }) ;
-
+  void addScrollListenerForListOfUsers() {
+    _scrollController.addListener(() {
+      bool isBottomOfPage = (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent);
+      print("scroll pixels: ${_scrollController.position.pixels}");
+      if (isBottomOfPage == true) {
+        fetchNextPageOfUsers();
+      }
+    });
   }
 
   void fetchListOfUsers() {
@@ -49,19 +48,16 @@ class _UserListState extends State<UserList> {
         this.listOfUsers.addAll(value);
         print("list of users: ${listOfUsers}");
       });
-
     });
   }
 
-
-  void fetchNextPageOfUsers(){
+  void fetchNextPageOfUsers() {
     viewModel.getNextPageOfUsers()?.then((listOfUsers) {
       setState(() {
         this.listOfUsers.addAll(listOfUsers);
         print("list of users: ${this.listOfUsers}");
       });
-    }
-    );
+    });
   }
 
   void showLoading() {
@@ -73,14 +69,13 @@ class _UserListState extends State<UserList> {
   void clearUserList() {
     setState(() {
       listOfUsers.clear();
-
     });
   }
 
-  void logOut(){
+  void logOut() {
     viewModel.clearPreferencecs();
-    Navigator.of(context).pushNamedAndRemoveUntil(
-        Login.routeName, (route) => false);
+    Navigator.of(context)
+        .pushNamedAndRemoveUntil(Login.routeName, (route) => false);
   }
 
   @override
@@ -91,60 +86,6 @@ class _UserListState extends State<UserList> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-
-      appBar: AppBar(
-        title: const Text("Fusemachines app"),
-      ),
-      drawer:
-      Drawer(
-          child: Container(
-        height: double.infinity,
-        child: Column(
-
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 8),
-              child: Image.asset(
-                'assets/graphics/fuse_machines.png',
-                alignment: Alignment.center,
-              ),
-              height: 100,
-            ),
-            Spacer(),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child:
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                child: InkWell(
-                  onTap: () {
-                    logOut();
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                    child:  Row(
-                      children: [
-                        Icon(Icons.logout),
-                        Container(
-                          margin: EdgeInsets.symmetric(horizontal: 8),
-                          child: Text(
-                            "Log Out",
-                            style: TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.bold),
-                          ),
-                        )
-                      ],
-                    ),
-                  )
-                 ,
-                ),
-              ),
-            )
-          ],
-        ),
-      )),
       body:
           this.isLoading ? this.showProgressIndicator() : this.showMainBody());
 
@@ -152,40 +93,37 @@ class _UserListState extends State<UserList> {
         padding: EdgeInsets.all(8),
         child: Column(
           children: <Widget>[
-
             Expanded(
-              flex: 1,
-              child: RefreshIndicator(child:
-              ListView.builder(itemBuilder: (BuildContext context, int index) {
-                return getUserCard(listOfUsers[index]);
-              },
-                itemCount: listOfUsers.length ,
-                controller: _scrollController ,),
-              onRefresh: () async{
-                  await viewModel.getListOfUsers().then((value)  {
-                    setState(() {
-                      this.listOfUsers.clear();
-                      this.listOfUsers.addAll(value);
+                flex: 1,
+                child: RefreshIndicator(
+                  child: ListView.builder(
+                    itemBuilder: (BuildContext context, int index) {
+                      return getUserCard(listOfUsers[index]);
+                    },
+                    itemCount: listOfUsers.length,
+                    controller: _scrollController,
+                  ),
+                  onRefresh: () async {
+                    await viewModel.getListOfUsers().then((value) {
+                      setState(() {
+                        this.listOfUsers.clear();
+                        this.listOfUsers.addAll(value);
+                      });
                     });
-
-                  });
-              },)
-
-            ),
+                  },
+                )),
             Align(
               alignment: Alignment.bottomCenter,
-                child: Column(
-                  children: [
-                    if(listOfUsers.isEmpty)
+              child: Column(
+                children: [
+                  if (listOfUsers.isEmpty)
                     getButtonThatMatchParent("Fetch Users", () {
                       fetchListOfUsers();
                     }),
-                    if (listOfUsers.isEmpty != true)
-                      getButtonThatMatchParent("Clear", clearUserList)
-                  ],
-                ),
-
-
+                  if (listOfUsers.isEmpty != true)
+                    getButtonThatMatchParent("Clear", clearUserList)
+                ],
+              ),
             )
           ],
         ),
