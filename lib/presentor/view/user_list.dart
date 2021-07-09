@@ -87,7 +87,6 @@ class _UserListState extends State<UserList> {
 
   @override
   void initState() {
-
     addScrollListenerForListOfUsers();
   }
 
