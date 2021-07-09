@@ -4,20 +4,29 @@ import 'package:fusemachines_app_1/di/application_component.dart';
 import 'package:fusemachines_app_1/presentor/view/login.dart';
 import 'package:fusemachines_app_1/presentor/view/sidenav.dart';
 import 'package:fusemachines_app_1/presentor/view/user_list.dart';
+import 'package:fusemachines_app_1/presentor/viewmodel/dashboard_view_model.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
 class Dashboard extends StatefulWidget {
   static const routeName = "/dashboard";
 
+  DashboardViewModel _viewModel;
+
+  Dashboard(this._viewModel);
+
   @override
   State<StatefulWidget> createState() {
-    return _DashboardState();
+    return _DashboardState(_viewModel);
   }
 }
 
 class _DashboardState extends State<Dashboard> {
   int _selectedBottomSheetIndex = 0;
+
+  DashboardViewModel _viewModel;
+
+  _DashboardState(this._viewModel);
 
   final List<Widget> listOfWidgets = [
     getIt.get<UserList>(),
@@ -28,6 +37,7 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Sidenav(onLogoutCallback: (){
+        _viewModel.clearSharedPrefs();
         Navigator.of(context).pushNamedAndRemoveUntil(Login.routeName, (route) => false);
       },),
       appBar: AppBar(
