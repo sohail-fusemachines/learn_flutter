@@ -58,8 +58,6 @@ class _UserListState extends State<UserList> {
 
   void fetchNextPageOfUsers(){
     viewModel.getNextPageOfUsers()?.then((listOfUsers) {
-
-
       setState(() {
         this.listOfUsers.addAll(listOfUsers);
         print("list of users: ${this.listOfUsers}");
