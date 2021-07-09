@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fusemachines_app_1/app_view_model.dart';
 import 'package:fusemachines_app_1/di/application_component.dart';
+import 'package:fusemachines_app_1/presentor/view/dashboard.dart';
 import 'package:fusemachines_app_1/presentor/view/login.dart';
 import 'package:fusemachines_app_1/presentor/view/splash.dart';
 import 'package:fusemachines_app_1/presentor/view/user_list.dart';
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
         primaryColor: Colors.blueAccent,
         primarySwatch: Colors.blue,
       ),
-      initialRoute: UserList.routeName,
+      initialRoute: Dashboard.routeName,
       // this._viewModel.isUserLoggedIn ? UserList.routeName : Login.routeName,
       onGenerateRoute: _routeGenerator.getRouteGenerator,
     );

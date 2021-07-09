@@ -29,9 +29,6 @@ class _UserListState extends State<UserList> {
 
   ScrollController _scrollController = ScrollController();
 
-
-
-
   void addScrollListenerForListOfUsers(){
    _scrollController.addListener(() {
      bool isBottomOfPage = (_scrollController.position.pixels == _scrollController.position.maxScrollExtent);
@@ -89,6 +86,7 @@ class _UserListState extends State<UserList> {
   @override
   void initState() {
     addScrollListenerForListOfUsers();
+    fetchListOfUsers();
   }
 
   @override
@@ -97,7 +95,8 @@ class _UserListState extends State<UserList> {
       appBar: AppBar(
         title: const Text("Fusemachines app"),
       ),
-      drawer: Drawer(
+      drawer:
+      Drawer(
           child: Container(
         height: double.infinity,
         child: Column(
@@ -177,6 +176,7 @@ class _UserListState extends State<UserList> {
               alignment: Alignment.bottomCenter,
                 child: Column(
                   children: [
+                    if(listOfUsers.isEmpty)
                     getButtonThatMatchParent("Fetch Users", () {
                       fetchListOfUsers();
                     }),
