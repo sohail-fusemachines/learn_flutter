@@ -56,6 +56,7 @@ class _UserListState extends State<UserList> {
     });
   }
 
+
   void fetchNextPageOfUsers(){
     viewModel.getNextPageOfUsers()?.then((listOfUsers) {
       setState(() {
@@ -155,12 +156,22 @@ class _UserListState extends State<UserList> {
 
             Expanded(
               flex: 1,
-              child:
-                ListView.builder(itemBuilder: (BuildContext context, int index) {
-                 return getUserCard(listOfUsers[index]);
-                },
-                  itemCount: listOfUsers.length ,
-                  controller: _scrollController ,)
+              child: RefreshIndicator(child:
+              ListView.builder(itemBuilder: (BuildContext context, int index) {
+                return getUserCard(listOfUsers[index]);
+              },
+                itemCount: listOfUsers.length ,
+                controller: _scrollController ,),
+              onRefresh: () async{
+                  await viewModel.getListOfUsers().then((value)  {
+                    setState(() {
+                      this.listOfUsers.clear();
+                      this.listOfUsers.addAll(value);
+                    });
+
+                  });
+              },)
+
             ),
             Align(
               alignment: Alignment.bottomCenter,
