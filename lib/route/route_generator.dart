@@ -12,7 +12,6 @@ import 'package:injectable/injectable.dart';
 @injectable
 class RouteGenerator {
 
-
   Route<dynamic>? getRouteGenerator(RouteSettings settings) {
     switch (settings.name) {
       case Dashboard.routeName:

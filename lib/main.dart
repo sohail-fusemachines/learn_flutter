@@ -37,8 +37,10 @@ class MyApp extends StatelessWidget {
 }
 
 void main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
   await configureDependencies();
+
   runApp(getIt.get<MyApp>());
 
 }
