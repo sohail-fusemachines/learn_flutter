@@ -6,7 +6,7 @@ import 'application_component.config.dart';
 final getIt = GetIt.instance;
 
 @InjectableInit(
-  generateForDir:const ['lib', 'test', 'lib/di/modules'] ,
+  generateForDir:const ['lib', 'test'] ,
   initializerName: r'$initGetIt',
 )
 Future<GetIt> configureDependencies()  async => await $initGetIt(getIt);

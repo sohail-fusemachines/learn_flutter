@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fusemachines_app_1/presentor/view/dashboard.dart';
 import 'package:fusemachines_app_1/presentor/view/login.dart';
 import 'package:fusemachines_app_1/presentor/view/user_list.dart';
 import 'package:fusemachines_app_1/presentor/viewmodel/splash_view_model.dart';
@@ -28,7 +29,7 @@ class _SplashState extends State<Splash> {
   void initState() {
    final isUserLoggedIn =  _viewModel.isUserLoggedIn();
     if(isUserLoggedIn){
-      _goToUserList();
+      _goToDashboard();
     }else {
       _goToLogin();
     }
@@ -38,8 +39,8 @@ class _SplashState extends State<Splash> {
     Navigator.of(context).pushNamedAndRemoveUntil(Login.routeName, (route) => false);
   }
 
-  void _goToUserList(){
-    Navigator.of(context).pushNamedAndRemoveUntil(UserList.routeName, (route) => false);
+  void _goToDashboard(){
+    Navigator.of(context).pushNamedAndRemoveUntil(Dashboard.routeName, (route) => false);
   }
 
   @override

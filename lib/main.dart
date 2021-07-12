@@ -1,3 +1,5 @@
+import 'dart:isolate';
+
 import 'package:flutter/material.dart';
 import 'package:fusemachines_app_1/app_view_model.dart';
 import 'package:fusemachines_app_1/di/application_component.dart';
@@ -37,6 +39,8 @@ class MyApp extends StatelessWidget {
 }
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await configureDependencies();
+
   runApp(getIt.get<MyApp>());
 }
