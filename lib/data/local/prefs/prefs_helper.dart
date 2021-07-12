@@ -9,16 +9,16 @@ abstract class PeferencesHelper {
   void clear();
 }
 
-@Injectable(as: PeferencesHelper)
+@Singleton(as: PeferencesHelper)
 class PeferencesHelperImpl extends PeferencesHelper {
-  SharedPreferences _preferences;
+  late SharedPreferences _preferences;
 
   PeferencesHelperImpl(this._preferences);
 
   @override
-  String? get token => _preferences.getString(TOKEN);
+  String? get token => _preferences.containsKey(TOKEN) ? _preferences.getString(TOKEN) : "";
 
-  set token(String? token) => _preferences.setString(TOKEN, token!);
+  set token(String? token) => _preferences.setString(TOKEN, token ?? "");
 
   @override
   void clear() {

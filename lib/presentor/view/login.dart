@@ -3,6 +3,8 @@ import 'package:fusemachines_app_1/presentor/view/user_list.dart';
 import 'package:fusemachines_app_1/presentor/viewmodel/login_view_model.dart';
 import 'package:injectable/injectable.dart';
 
+import 'dashboard.dart';
+
 @injectable
 class Login extends StatefulWidget {
   static const routeName = "/login";
@@ -33,7 +35,6 @@ class _LoginState extends State<Login> {
 
   void login(BuildContext context) {
     if(_formKey.currentState!.validate() == true){
-
       this._isLoading = true;
       _viewModel
           .login(this._usernameController.text, this._passwordController.text)
@@ -44,15 +45,15 @@ class _LoginState extends State<Login> {
               .showSnackBar(SnackBar(content: Text(value.error!)));
         } else {
           _isLoading = false;
-            goToUserListPage();
+            goToDashboard();
         }
       });
     }
   }
 
-  void goToUserListPage(){
+  void goToDashboard(){
     Navigator.of(context).pushNamedAndRemoveUntil(
-        UserList.routeName, (route) => false);
+       Dashboard.routeName, (route) => false);
   }
 
   @override

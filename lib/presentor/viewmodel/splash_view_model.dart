@@ -7,6 +7,13 @@ class SplashViewModel {
 
   SplashViewModel(this._repository);
 
-  bool isUserLoggedIn() => (_repository.getToken() != null);
+  bool isUserLoggedIn() {
+    final token = _repository.getToken();
+    if(token == null || token == ""){
+      return false;
+    }
+    return true;
+  }
+  
 
 }

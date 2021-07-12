@@ -1,7 +1,6 @@
 import 'dart:isolate';
 
 import 'package:flutter/material.dart';
-import 'package:fusemachines_app_1/app_view_model.dart';
 import 'package:fusemachines_app_1/di/application_component.dart';
 import 'package:fusemachines_app_1/presentor/view/dashboard.dart';
 import 'package:fusemachines_app_1/presentor/view/login.dart';
@@ -14,10 +13,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 @injectable
 class MyApp extends StatelessWidget {
 
-  late AppViewModel _viewModel;
-  late RouteGenerator _routeGenerator;
+  RouteGenerator _routeGenerator;
 
-  MyApp(this._viewModel, this._routeGenerator);
+  MyApp(this._routeGenerator);
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +39,6 @@ class MyApp extends StatelessWidget {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configureDependencies();
-
   runApp(getIt.get<MyApp>());
+
 }
