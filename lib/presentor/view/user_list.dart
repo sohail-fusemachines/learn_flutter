@@ -10,23 +10,25 @@ import 'package:injectable/injectable.dart';
 class UserList extends StatefulWidget {
   static const routeName = "/userList";
 
-  UserListViewModel viewModel;
+  UserListViewModel _viewModel;
+  UserDetailModel _userDetailModel;
 
-  UserList(this.viewModel);
+  UserList(this._viewModel, this._userDetailModel);
 
   @override
   State<StatefulWidget> createState() {
-    return _UserListState(viewModel);
+    return _UserListState(_viewModel, this._userDetailModel);
   }
 }
 
 class _UserListState extends State<UserList> {
-  _UserListState(this.viewModel);
+
 
   UserListViewModel viewModel;
   List<User> listOfUsers = [];
   bool isLoading = false;
-
+  UserDetailModel _userDetailModel;
+  _UserListState(this.viewModel, this._userDetailModel);
   ScrollController _scrollController = ScrollController();
 
   void addScrollListenerForListOfUsers() {
@@ -133,8 +135,8 @@ class _UserListState extends State<UserList> {
       margin: EdgeInsets.fromLTRB(0, 0, 0, 4),
       child: GestureDetector(
         onTap: () {
-          Navigator.of(context)
-              .pushNamed(UserDetails.routeName, arguments: user);
+          this._userDetailModel.user = user;
+
         },
         child: Card(
             child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [

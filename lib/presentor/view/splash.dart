@@ -27,12 +27,18 @@ class _SplashState extends State<Splash> {
 
   @override
   void initState() {
-   final isUserLoggedIn =  _viewModel.isUserLoggedIn();
-    if(isUserLoggedIn){
-      _goToDashboard();
-    }else {
-      _goToLogin();
-    }
+    handleUserLoggedIn();
+  }
+
+  void handleUserLoggedIn() async {
+    await Future.delayed(Duration(seconds: 2), (){
+      final isUserLoggedIn =  _viewModel.isUserLoggedIn();
+      if(isUserLoggedIn){
+        _goToDashboard();
+      }else {
+        _goToLogin();
+      }
+    } );
   }
 
   void _goToLogin(){
@@ -51,4 +57,5 @@ class _SplashState extends State<Splash> {
       ),
     );
   }
+
 }

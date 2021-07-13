@@ -9,7 +9,7 @@ import 'package:fusemachines_app_1/presentor/view/user_details.dart';
 import 'package:fusemachines_app_1/presentor/view/user_list.dart';
 import 'package:injectable/injectable.dart';
 
-@injectable
+@lazySingleton
 class RouteGenerator {
 
   Route<dynamic>? getRouteGenerator(RouteSettings settings) {
@@ -23,21 +23,18 @@ class RouteGenerator {
 
       case UserList.routeName:
         return MaterialPageRoute(
-            builder: (context) => SafeArea(
+            builder: (_) => SafeArea(
                   child: getIt<UserList>(),
                 ));
 
       case UserDetails.routeName:
         {
-          if (settings.arguments is User) {
-            User user = settings.arguments as User;
             return MaterialPageRoute(
               builder: (_) => SafeArea(
-                  child: UserDetails("${user.firstName} ${user.lastName}",
-                      user.email, user.avatar)),
+                  child: getIt<UserDetails>(),
+              )
             );
-          }
-          break;
+
         }
 
       case Login.routeName:

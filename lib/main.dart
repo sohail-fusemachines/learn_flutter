@@ -1,18 +1,14 @@
-import 'dart:isolate';
+import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fusemachines_app_1/di/application_component.dart';
-import 'package:fusemachines_app_1/presentor/view/dashboard.dart';
-import 'package:fusemachines_app_1/presentor/view/login.dart';
 import 'package:fusemachines_app_1/presentor/view/splash.dart';
-import 'package:fusemachines_app_1/presentor/view/user_list.dart';
 import 'package:fusemachines_app_1/route/route_generator.dart';
 import 'package:injectable/injectable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 @injectable
 class MyApp extends StatelessWidget {
-
   RouteGenerator _routeGenerator;
 
   MyApp(this._routeGenerator);
@@ -37,10 +33,21 @@ class MyApp extends StatelessWidget {
 }
 
 void main() async {
-
-  WidgetsFlutterBinding.ensureInitialized();
+  handleError();
+  startAppWithoutUi();
   await configureDependencies();
-
   runApp(getIt.get<MyApp>());
+}
 
+void handleError(){
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.dumpErrorToConsole(details);
+    if (kReleaseMode)
+      exit(1);
+  };
+}
+
+void startAppWithoutUi() {
+  WidgetsFlutterBinding.ensureInitialized()
+    ..scheduleWarmUpFrame();
 }

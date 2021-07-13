@@ -1,27 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:fusemachines_app_1/presentor/viewmodel/user_list_view_model.dart';
+import 'package:injectable/injectable.dart';
 
+@injectable
 class UserDetails extends StatefulWidget {
   static const routeName = "/userDetails";
 
-  String imageSrc;
-  String name;
-  String email;
+  UserDetailModel _userDetailModel;
 
-  UserDetails(this.name, this.email, this.imageSrc);
+  UserDetails(this._userDetailModel);
 
   @override
   State<StatefulWidget> createState() {
-    return _UserDetailsState(name, email, imageSrc);
+    return _UserDetailsState(this._userDetailModel);
   }
 }
 
 class _UserDetailsState extends State<UserDetails> {
+  String imageSrc = "";
+  String name = "";
+  String email = "";
 
-  String imageSrc;
-  String name;
-  String email;
+  UserDetailModel _userDetailModel;
 
-  _UserDetailsState(this.name, this.email, this.imageSrc);
+  _UserDetailsState(this._userDetailModel);
+
+  @override
+  void initState() {
+    _observeUserDetails();
+    super.initState();
+  }
+
+  void _observeUserDetails() {
+    this.imageSrc = this._userDetailModel.user.avatar;
+    this.name = this._userDetailModel.user.firstName +
+        " " +
+        this._userDetailModel.user.lastName;
+    this.email = this._userDetailModel.user.email;
+  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -37,18 +53,17 @@ class _UserDetailsState extends State<UserDetails> {
         body: Column(
           children: [
             Container(
-
-              child: Hero( tag: 'userImage',
-                child: Expanded(  flex: 1,
+              child: Hero(
+                tag: 'userImage',
+                child: Expanded(
+                  flex: 1,
                   child: Image.network(
                     imageSrc,
                     height: 300,
                     width: double.infinity,
                     fit: BoxFit.cover,
                   ),
-
                 ),
-
               ),
               width: double.infinity,
             ),
