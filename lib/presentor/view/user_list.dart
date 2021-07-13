@@ -5,19 +5,20 @@ import 'package:fusemachines_app_1/presentor/view/login.dart';
 import 'package:fusemachines_app_1/presentor/view/user_details.dart';
 import 'package:fusemachines_app_1/presentor/viewmodel/user_list_view_model.dart';
 import 'package:injectable/injectable.dart';
+import 'package:provider/provider.dart';
 
 @injectable
 class UserList extends StatefulWidget {
   static const routeName = "/userList";
 
   UserListViewModel _viewModel;
-  UserDetailModel _userDetailModel;
 
-  UserList(this._viewModel, this._userDetailModel);
+
+  UserList(this._viewModel);
 
   @override
   State<StatefulWidget> createState() {
-    return _UserListState(_viewModel, this._userDetailModel);
+    return _UserListState(_viewModel);
   }
 }
 
@@ -27,15 +28,13 @@ class _UserListState extends State<UserList> {
   UserListViewModel viewModel;
   List<User> listOfUsers = [];
   bool isLoading = false;
-  UserDetailModel _userDetailModel;
-  _UserListState(this.viewModel, this._userDetailModel);
+  _UserListState(this.viewModel);
   ScrollController _scrollController = ScrollController();
 
-  void addScrollListenerForListOfUsers() {
+  void addScrollListenerForListOfUsers() async {
     _scrollController.addListener(() {
       bool isBottomOfPage = (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent);
-      print("scroll pixels: ${_scrollController.position.pixels}");
       if (isBottomOfPage == true) {
         fetchNextPageOfUsers();
       }
@@ -87,11 +86,13 @@ class _UserListState extends State<UserList> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-      body:
-          this.isLoading ? this.showProgressIndicator() : this.showMainBody());
+  Widget build(BuildContext context) =>
+      Consumer<UserDetailModel>(builder: (context, value, child) =>   Scaffold(
+          body:
+          this.isLoading ? this.showProgressIndicator() : this.showMainBody(value)));
 
-  Widget showMainBody() => Container(
+
+  Widget showMainBody(UserDetailModel userDetailModel) => Container(
         padding: EdgeInsets.all(8),
         child: Column(
           children: <Widget>[
@@ -100,7 +101,7 @@ class _UserListState extends State<UserList> {
                 child: RefreshIndicator(
                   child: ListView.builder(
                     itemBuilder: (BuildContext context, int index) {
-                      return getUserCard(listOfUsers[index]);
+                      return getUserCard(listOfUsers[index], userDetailModel);
                     },
                     itemCount: listOfUsers.length,
                     controller: _scrollController,
@@ -131,11 +132,11 @@ class _UserListState extends State<UserList> {
         ),
       );
 
-  Widget getUserCard(User user) => Container(
+  Widget getUserCard(User user, [UserDetailModel? userDetailModel]) => Container(
       margin: EdgeInsets.fromLTRB(0, 0, 0, 4),
       child: GestureDetector(
         onTap: () {
-          this._userDetailModel.user = user;
+          userDetailModel?.user = user;
 
         },
         child: Card(

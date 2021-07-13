@@ -4,8 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fusemachines_app_1/di/application_component.dart';
 import 'package:fusemachines_app_1/presentor/view/splash.dart';
+import 'package:fusemachines_app_1/presentor/viewmodel/user_list_view_model.dart';
 import 'package:fusemachines_app_1/route/route_generator.dart';
 import 'package:injectable/injectable.dart';
+import 'package:provider/provider.dart';
 
 @injectable
 class MyApp extends StatelessWidget {
@@ -15,19 +17,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        appBarTheme: AppBarTheme(
-          color: Colors.blue,
-          brightness: Brightness.light,
+    return ChangeNotifierProvider(
+      create: (context) => getIt<UserDetailModel>(),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          appBarTheme: AppBarTheme(
+            color: Colors.blue,
+            brightness: Brightness.light,
+          ),
+          primaryColor: Colors.blueAccent,
+          primarySwatch: Colors.blue,
         ),
-        primaryColor: Colors.blueAccent,
-        primarySwatch: Colors.blue,
+        initialRoute: Splash.routeName,
+        // this._viewModel.isUserLoggedIn ? UserList.routeName : Login.routeName,
+        onGenerateRoute: _routeGenerator.getRouteGenerator,
       ),
-      initialRoute: Splash.routeName,
-      // this._viewModel.isUserLoggedIn ? UserList.routeName : Login.routeName,
-      onGenerateRoute: _routeGenerator.getRouteGenerator,
     );
   }
 }
@@ -39,15 +44,13 @@ void main() async {
   runApp(getIt.get<MyApp>());
 }
 
-void handleError(){
+void handleError() {
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.dumpErrorToConsole(details);
-    if (kReleaseMode)
-      exit(1);
+    if (kReleaseMode) exit(1);
   };
 }
 
 void startAppWithoutUi() {
-  WidgetsFlutterBinding.ensureInitialized()
-    ..scheduleWarmUpFrame();
+  WidgetsFlutterBinding.ensureInitialized()..scheduleWarmUpFrame();
 }

@@ -34,7 +34,6 @@ class RouteGenerator {
                   child: getIt<UserDetails>(),
               )
             );
-
         }
 
       case Login.routeName:

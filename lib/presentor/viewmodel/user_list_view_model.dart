@@ -32,7 +32,7 @@ class UserListViewModel {
   }
 }
 
-@lazySingleton
+@injectable
 class UserDetailModel extends ChangeNotifier {
   late User _user;
 
