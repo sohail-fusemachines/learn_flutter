@@ -44,6 +44,7 @@ class _DashboardState extends State<Dashboard> {
   }
 
   void _observeOnUserDetailsAdded(UserDetailModel userDetailModel) {
+
         this._userDetailModel = userDetailModel;
         _userDetailModel.addListener(_goToUserDetails);
   }

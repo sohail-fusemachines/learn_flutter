@@ -43,5 +43,4 @@ class UserDetailModel extends ChangeNotifier {
 
   User get user => _user;
 
-  UserDetailModel();
 }
