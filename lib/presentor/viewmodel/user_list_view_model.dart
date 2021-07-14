@@ -31,16 +31,3 @@ class UserListViewModel {
     _repo.clearPreferences();
   }
 }
-
-@injectable
-class UserDetailModel extends ChangeNotifier {
-  late User _user;
-
-  set user (User user) {
-    this._user = user;
-    notifyListeners();
-  }
-
-  User get user => _user;
-
-}

@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fusemachines_app_1/di/application_component.dart';
+import 'package:fusemachines_app_1/presentor/cubit/authentication/authentication_cubit.dart';
+import 'package:fusemachines_app_1/presentor/cubit/user_list/user_list_cubit.dart';
 import 'package:fusemachines_app_1/presentor/view/login.dart';
 import 'package:fusemachines_app_1/presentor/view/sidenav.dart';
 import 'package:fusemachines_app_1/presentor/view/user_details.dart';
@@ -14,24 +17,15 @@ import 'package:provider/provider.dart';
 class Dashboard extends StatefulWidget {
   static const routeName = "/dashboard";
 
-  DashboardViewModel _viewModel;
-
-  Dashboard(this._viewModel);
 
   @override
   State<StatefulWidget> createState() {
-    return _DashboardState(_viewModel);
+    return _DashboardState();
   }
 }
 
 class _DashboardState extends State<Dashboard> {
   int _selectedBottomSheetIndex = 0;
-
-  DashboardViewModel _viewModel;
-
-  late UserDetailModel _userDetailModel;
-
-  _DashboardState(this._viewModel);
 
   final List<Widget> listOfWidgets = [
     getIt.get<UserList>(),
@@ -40,31 +34,30 @@ class _DashboardState extends State<Dashboard> {
 
   void _goToUserDetails() {
     Navigator.of(context).pushNamed(UserDetails.routeName);
-    this._userDetailModel.removeListener(_goToUserDetails);
   }
 
-  void _observeOnUserDetailsAdded(UserDetailModel userDetailModel) {
-
-        this._userDetailModel = userDetailModel;
-        _userDetailModel.addListener(_goToUserDetails);
-  }
 
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<UserDetailModel>(builder: (context, value, child) {
-
-      _observeOnUserDetailsAdded(value);
-      return _getDashboardView();
-    });
+    return BlocListener<UserListCubit, UserListState>(
+      child: _getDashboardView()
+      , listener: (context, state) {
+      switch (state.runtimeType) {
+        case UserListItemClicked:
+          {
+            _goToUserDetails();
+            break;
+          }
+      }
+    },);
   }
 
-  Widget _getDashboardView() => Scaffold(
+  Widget _getDashboardView() =>
+      Scaffold(
         drawer: Sidenav(
           onLogoutCallback: () {
-            _viewModel.clearSharedPrefs();
-            Navigator.of(context)
-                .pushNamedAndRemoveUntil(Login.routeName, (route) => false);
+            super.context.read<AuthenticationCubit>().logOut();
           },
         ),
         appBar: AppBar(

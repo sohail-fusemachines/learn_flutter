@@ -1,9 +1,9 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fusemachines_app_1/model/user.dart';
-import 'package:fusemachines_app_1/presentor/view/login.dart';
-import 'package:fusemachines_app_1/presentor/view/user_details.dart';
-import 'package:fusemachines_app_1/presentor/viewmodel/user_list_view_model.dart';
+import 'package:fusemachines_app_1/presentor/cubit/user_list/user_list_cubit.dart';
 import 'package:injectable/injectable.dart';
 import 'package:provider/provider.dart';
 
@@ -11,24 +11,18 @@ import 'package:provider/provider.dart';
 class UserList extends StatefulWidget {
   static const routeName = "/userList";
 
-  UserListViewModel _viewModel;
-
-
-  UserList(this._viewModel);
-
   @override
   State<StatefulWidget> createState() {
-    return _UserListState(_viewModel);
+    return _UserListState();
   }
 }
 
 class _UserListState extends State<UserList> {
 
+  UserListCubit get _cubit => super.context.read<UserListCubit>();
 
-  UserListViewModel viewModel;
   List<User> listOfUsers = [];
   bool isLoading = false;
-  _UserListState(this.viewModel);
   ScrollController _scrollController = ScrollController();
 
   void addScrollListenerForListOfUsers() async {
@@ -42,23 +36,11 @@ class _UserListState extends State<UserList> {
   }
 
   void fetchListOfUsers() {
-    showLoading();
-    viewModel.getListOfUsers().then((List<User> value) {
-      setState(() {
-        this.isLoading = false;
-        this.listOfUsers.addAll(value);
-        print("list of users: ${listOfUsers}");
-      });
-    });
+    _cubit.getListOfUsers();
   }
 
   void fetchNextPageOfUsers() {
-    viewModel.getNextPageOfUsers()?.then((listOfUsers) {
-      setState(() {
-        this.listOfUsers.addAll(listOfUsers);
-        print("list of users: ${this.listOfUsers}");
-      });
-    });
+    _cubit.getNextPageOfUsers();
   }
 
   void showLoading() {
@@ -73,12 +55,6 @@ class _UserListState extends State<UserList> {
     });
   }
 
-  void logOut() {
-    viewModel.clearPreferencecs();
-    Navigator.of(context)
-        .pushNamedAndRemoveUntil(Login.routeName, (route) => false);
-  }
-
   @override
   void initState() {
     addScrollListenerForListOfUsers();
@@ -87,12 +63,35 @@ class _UserListState extends State<UserList> {
 
   @override
   Widget build(BuildContext context) =>
-      Consumer<UserDetailModel>(builder: (context, value, child) =>   Scaffold(
-          body:
-          this.isLoading ? this.showProgressIndicator() : this.showMainBody(value)));
+      BlocConsumer<UserListCubit, UserListState>(builder: (context, state) {
+        switch(state.runtimeType){
+          case UserListLoading: {
+            return this.showProgressIndicator();
+          }
+        }
+        return this.showMainBody(context);
+      },listener: (context, state) {
+        switch(state.runtimeType){
+          case UserListLoaded: {
+            setState(() {
+              this.listOfUsers.addAll((state as UserListLoaded).listOfUser);
+            });
+
+            break;
+          }
+          case UserListNextPage: {
+            setState(() {
+              this.listOfUsers.addAll((state as UserListNextPage).listOfUser);
+            });
+            break;
+          }
+          }
+        }
+      );
+          // this.isLoading ? this.showProgressIndicator() : this.showMainBody(value)));
 
 
-  Widget showMainBody(UserDetailModel userDetailModel) => Container(
+  Widget showMainBody(BuildContext context ) => Container(
         padding: EdgeInsets.all(8),
         child: Column(
           children: <Widget>[
@@ -101,18 +100,13 @@ class _UserListState extends State<UserList> {
                 child: RefreshIndicator(
                   child: ListView.builder(
                     itemBuilder: (BuildContext context, int index) {
-                      return getUserCard(listOfUsers[index], userDetailModel);
+                      return getUserCard(listOfUsers[index], context);
                     },
                     itemCount: listOfUsers.length,
                     controller: _scrollController,
                   ),
                   onRefresh: () async {
-                    await viewModel.getListOfUsers().then((value) {
-                      setState(() {
-                        this.listOfUsers.clear();
-                        this.listOfUsers.addAll(value);
-                      });
-                    });
+                     _cubit.getListOfUsers();
                   },
                 )),
             Align(
@@ -132,11 +126,11 @@ class _UserListState extends State<UserList> {
         ),
       );
 
-  Widget getUserCard(User user, [UserDetailModel? userDetailModel]) => Container(
+  Widget getUserCard(User user, [BuildContext? context]) => Container(
       margin: EdgeInsets.fromLTRB(0, 0, 0, 4),
       child: GestureDetector(
         onTap: () {
-          userDetailModel?.user = user;
+          context?.read<UserListCubit>().selectedUser(user);
 
         },
         child: Card(
