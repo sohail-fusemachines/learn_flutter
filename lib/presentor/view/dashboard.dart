@@ -2,8 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fusemachines_app_1/di/application_component.dart';
-import 'package:fusemachines_app_1/presentor/cubit/authentication/authentication_cubit.dart';
-import 'package:fusemachines_app_1/presentor/cubit/user_list/user_list_cubit.dart';
+import 'package:fusemachines_app_1/presentor/bloc/authentication/authentication_bloc.dart';
+import 'package:fusemachines_app_1/presentor/bloc/user_list/user_list_bloc.dart';
+
 import 'package:fusemachines_app_1/presentor/view/login.dart';
 import 'package:fusemachines_app_1/presentor/view/sidenav.dart';
 import 'package:fusemachines_app_1/presentor/view/user_details.dart';
@@ -43,7 +44,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(child: _getDashboardView(), listeners: [
-      BlocListener<UserListCubit, UserListState>(
+      BlocListener<UserListBloc, UserListState>(
         listener: (context, state) {
         switch (state.runtimeType) {
           case UserListItemClicked:
@@ -53,7 +54,7 @@ class _DashboardState extends State<Dashboard> {
             }
         }
       }),
-      BlocListener<AuthenticationCubit, AuthenticationState>(
+      BlocListener<AuthenticationBloc, AuthenticationState>(
           listener: (context, state) {
             switch (state.runtimeType) {
               case AuthenticationLoggedOut:
@@ -71,7 +72,7 @@ class _DashboardState extends State<Dashboard> {
       Scaffold(
         drawer: Sidenav(
           onLogoutCallback: () {
-            context.read<AuthenticationCubit>().logOut();
+            context.read<AuthenticationBloc>().add(LogoutEvent());
           },
         ),
         appBar: AppBar(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fusemachines_app_1/presentor/cubit/authentication/authentication_cubit.dart';
+import 'package:fusemachines_app_1/presentor/bloc/authentication/authentication_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import 'dashboard.dart';
@@ -25,7 +25,8 @@ class _LoginState extends State<Login> {
 
   void login(BuildContext context) {
     if (_formKey.currentState!.validate() == true) {
-      context.read<AuthenticationCubit>().login(this._usernameController.text, this._passwordController.text);
+      context.read<AuthenticationBloc>().add(LoginEvent(this._usernameController.text, this._passwordController.text));
+
     }
   }
 
@@ -36,7 +37,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) =>
-      BlocConsumer<AuthenticationCubit, AuthenticationState>(
+      BlocConsumer<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {
           switch(state.runtimeType){
             case AuthenticationLoading: {

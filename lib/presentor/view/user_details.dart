@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fusemachines_app_1/presentor/cubit/user_list/user_list_cubit.dart';
-
+import 'package:fusemachines_app_1/presentor/bloc/user_list/user_list_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
@@ -18,7 +17,7 @@ class _UserDetailsState extends State<UserDetails> {
 
 
   @override
-  Widget build(BuildContext context) => BlocBuilder<UserListCubit, UserListState>(builder: (context, state  ) =>   Scaffold(
+  Widget build(BuildContext context) => BlocBuilder<UserListBloc, UserListState>(builder: (context, state  ) =>   Scaffold(
     appBar: AppBar(
       title: Text("User Details"),
       leading: IconButton(

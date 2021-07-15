@@ -1,28 +1,51 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:fusemachines_app_1/model/user.dart';
 import 'package:fusemachines_app_1/model/user_list_api_response.dart';
 import 'package:fusemachines_app_1/repository/app_repository.dart';
 import 'package:injectable/injectable.dart';
 import 'package:meta/meta.dart';
 
+part 'user_list_event.dart';
 part 'user_list_state.dart';
 
 @injectable
-class UserListCubit extends Cubit<UserListState> {
-  final AppRepository _repo;
+class UserListBloc extends Bloc<UserListEvent, UserListState> {
+  AppRepository _repo;
+  UserListBloc(this._repo) : super(UserListInitial());
 
-  UserListCubit(this._repo) : super(UserListInitial());
+  @override
+  Stream<UserListState> mapEventToState(
+    UserListEvent event,
+  ) async* {
+      switch(event.runtimeType){
+        case GetUserListEvent:{
+          _getListOfUsers();
+          break;
+        }
+        case SelectUserEvent:{
+          _selectedUser((event as SelectUserEvent).user);
+          break;
+        }
+        case NextPageEvent:{
+          _getNextPageOfUsers();
+          break;
+        }
+      }
+  }
 
   double _totalPage = 0;
   double _currentPage = 0;
 
-  void getListOfUsers([double pageNumber = 1]) {
+  void _getListOfUsers([double pageNumber = 1]) {
 
     if (state is UserListInitial) {
       emit(UserListLoading());
     }
 
-    _repo.getListOfUsers(pageNumber).then(handlePageNumber).then((value) {
+    _repo.getListOfUsers(pageNumber).then(_handlePageNumber).then((value) {
       switch (state.runtimeType) {
         case UserListError:
         case UserListLoading:
@@ -44,18 +67,18 @@ class UserListCubit extends Cubit<UserListState> {
     });
   }
 
-  void selectedUser(User user){
+  void _selectedUser(User user){
     emit(UserListItemClicked(user));
   }
 
-  void getNextPageOfUsers() {
+  void _getNextPageOfUsers() {
     if (_currentPage < _totalPage) {
-      getListOfUsers(_currentPage + 1);
+      _getListOfUsers(_currentPage + 1);
     }
   }
 
 
-  Future<List<User>> handlePageNumber(UserListApiResponse value) async {
+  Future<List<User>> _handlePageNumber(UserListApiResponse value) async {
     _totalPage = value.totalPages;
     _currentPage = value.page;
     return value.data;

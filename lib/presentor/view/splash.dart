@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fusemachines_app_1/presentor/cubit/authentication/authentication_cubit.dart';
+import 'package:fusemachines_app_1/presentor/bloc/authentication/authentication_bloc.dart';
 import 'package:fusemachines_app_1/presentor/view/dashboard.dart';
 import 'package:fusemachines_app_1/presentor/view/login.dart';
 import 'package:injectable/injectable.dart';
@@ -29,8 +29,7 @@ class _SplashState extends State<Splash> {
 
   @override
   Widget build(BuildContext context) {
-    // context.read<AuthenticationCubit>().handleUserLoggedIn();
-   return BlocListener<AuthenticationCubit, AuthenticationState>(
+   return BlocListener<AuthenticationBloc, AuthenticationState>(
      listener: (context, state) {
       switch(state.runtimeType){
         case AuthenticationLoggedIn: {

@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fusemachines_app_1/model/user.dart';
-import 'package:fusemachines_app_1/presentor/cubit/user_list/user_list_cubit.dart';
+import 'package:fusemachines_app_1/presentor/bloc/user_list/user_list_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +19,7 @@ class UserList extends StatefulWidget {
 
 class _UserListState extends State<UserList> {
 
-  UserListCubit get _cubit => super.context.read<UserListCubit>();
+  UserListBloc get _userListBloc => super.context.read<UserListBloc>();
 
   List<User> listOfUsers = [];
   bool isLoading = false;
@@ -36,11 +36,11 @@ class _UserListState extends State<UserList> {
   }
 
   void fetchListOfUsers() {
-    _cubit.getListOfUsers();
+    _userListBloc.add(GetUserListEvent());
   }
 
   void fetchNextPageOfUsers() {
-    _cubit.getNextPageOfUsers();
+    _userListBloc.add(NextPageEvent());
   }
 
   void showLoading() {
@@ -63,7 +63,7 @@ class _UserListState extends State<UserList> {
 
   @override
   Widget build(BuildContext context) =>
-      BlocConsumer<UserListCubit, UserListState>(builder: (context, state) {
+      BlocConsumer<UserListBloc, UserListState>(builder: (context, state) {
         switch(state.runtimeType){
           case UserListLoading: {
             return this.showProgressIndicator();
@@ -108,7 +108,7 @@ class _UserListState extends State<UserList> {
                     controller: _scrollController,
                   ),
                   onRefresh: () async {
-                     _cubit.getListOfUsers();
+                     _userListBloc.add(GetUserListEvent());
                   },
                 )),
             Align(
@@ -132,7 +132,7 @@ class _UserListState extends State<UserList> {
       margin: EdgeInsets.fromLTRB(0, 0, 0, 4),
       child: GestureDetector(
         onTap: () {
-          context?.read<UserListCubit>().selectedUser(user);
+          context?.read<UserListBloc>().add(SelectUserEvent(user));
 
         },
         child: Card(

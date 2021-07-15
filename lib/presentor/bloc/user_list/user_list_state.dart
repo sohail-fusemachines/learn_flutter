@@ -1,4 +1,4 @@
-part of 'user_list_cubit.dart';
+part of 'user_list_bloc.dart';
 
 @immutable
 abstract class UserListState {}
@@ -19,10 +19,10 @@ class UserListNextPage extends UserListState{
 }
 
 class UserListItemClicked extends UserListState{
-    final User _user;
-    User get user => _user;
+  final User _user;
+  User get user => _user;
 
-    UserListItemClicked(this._user);
+  UserListItemClicked(this._user);
 }
 
 class UserListError extends UserListState {
