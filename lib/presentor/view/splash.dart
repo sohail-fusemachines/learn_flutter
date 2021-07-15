@@ -7,23 +7,13 @@ import 'package:fusemachines_app_1/presentor/view/login.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
-class Splash extends StatefulWidget {
+class Splash extends StatelessWidget {
   static const String routeName ="/splash";
-
-
-  @override
-  State<StatefulWidget> createState() {
-    return _SplashState();
-  }
-}
-
-class _SplashState extends State<Splash> {
-
-  void _goToLogin(){
+  void _goToLogin(BuildContext context){
     Navigator.of(context).pushNamedAndRemoveUntil(Login.routeName, (route) => false);
   }
 
-  void _goToDashboard(){
+  void _goToDashboard(BuildContext context){
     Navigator.of(context).pushNamedAndRemoveUntil(Dashboard.routeName, (route) => false);
   }
 
@@ -33,11 +23,11 @@ class _SplashState extends State<Splash> {
      listener: (context, state) {
       switch(state.runtimeType){
         case AuthenticationLoggedIn: {
-          _goToDashboard();
+          _goToDashboard(context);
           break;
         }
         case AuthenticationLoggedOut: {
-          _goToLogin();
+          _goToLogin(context);
           break;
         }
       }
