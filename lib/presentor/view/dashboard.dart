@@ -8,8 +8,6 @@ import 'package:fusemachines_app_1/presentor/view/login.dart';
 import 'package:fusemachines_app_1/presentor/view/sidenav.dart';
 import 'package:fusemachines_app_1/presentor/view/user_details.dart';
 import 'package:fusemachines_app_1/presentor/view/user_list.dart';
-import 'package:fusemachines_app_1/presentor/viewmodel/dashboard_view_model.dart';
-import 'package:fusemachines_app_1/presentor/viewmodel/user_list_view_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:provider/provider.dart';
 
@@ -36,28 +34,44 @@ class _DashboardState extends State<Dashboard> {
     Navigator.of(context).pushNamed(UserDetails.routeName);
   }
 
+  void _logOut(){
+    Navigator.of(context).pushNamedAndRemoveUntil(Login.routeName, (route) => false);
+  }
+
 
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<UserListCubit, UserListState>(
-      child: _getDashboardView()
-      , listener: (context, state) {
-      switch (state.runtimeType) {
-        case UserListItemClicked:
-          {
-            _goToUserDetails();
-            break;
-          }
-      }
-    },);
+    return MultiBlocListener(child: _getDashboardView(), listeners: [
+      BlocListener<UserListCubit, UserListState>(
+        listener: (context, state) {
+        switch (state.runtimeType) {
+          case UserListItemClicked:
+            {
+              _goToUserDetails();
+              break;
+            }
+        }
+      }),
+      BlocListener<AuthenticationCubit, AuthenticationState>(
+          listener: (context, state) {
+            switch (state.runtimeType) {
+              case AuthenticationLoggedOut:
+                {
+                  _logOut();
+                  break;
+                }
+            }
+          }),
+    ],);
+
   }
 
   Widget _getDashboardView() =>
       Scaffold(
         drawer: Sidenav(
           onLogoutCallback: () {
-            super.context.read<AuthenticationCubit>().logOut();
+            context.read<AuthenticationCubit>().logOut();
           },
         ),
         appBar: AppBar(

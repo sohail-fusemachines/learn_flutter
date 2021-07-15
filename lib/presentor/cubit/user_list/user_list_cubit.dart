@@ -54,9 +54,6 @@ class UserListCubit extends Cubit<UserListState> {
     }
   }
 
-  void clearPreferencecs() {
-    _repo.clearPreferences();
-  }
 
   Future<List<User>> handlePageNumber(UserListApiResponse value) async {
     _totalPage = value.totalPages;

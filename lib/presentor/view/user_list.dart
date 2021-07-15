@@ -73,6 +73,8 @@ class _UserListState extends State<UserList> {
       },listener: (context, state) {
         switch(state.runtimeType){
           case UserListLoaded: {
+            //TODO: Remove set state..
+            //TODO: Handle pagination from cubit.
             setState(() {
               this.listOfUsers.addAll((state as UserListLoaded).listOfUser);
             });

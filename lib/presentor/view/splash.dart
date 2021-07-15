@@ -1,45 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fusemachines_app_1/presentor/cubit/authentication/authentication_cubit.dart';
 import 'package:fusemachines_app_1/presentor/view/dashboard.dart';
 import 'package:fusemachines_app_1/presentor/view/login.dart';
-import 'package:fusemachines_app_1/presentor/view/user_list.dart';
-import 'package:fusemachines_app_1/presentor/viewmodel/splash_view_model.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
 class Splash extends StatefulWidget {
   static const String routeName ="/splash";
-  SplashViewModel _viewModel;
 
-  Splash(this._viewModel);
 
   @override
   State<StatefulWidget> createState() {
-    return _SplashState(_viewModel);
+    return _SplashState();
   }
 }
 
 class _SplashState extends State<Splash> {
-
-
-  SplashViewModel _viewModel;
-  _SplashState(this._viewModel);
-
-  @override
-  void initState() {
-    handleUserLoggedIn();
-  }
-
-  void handleUserLoggedIn() async {
-    await Future.delayed(Duration(seconds: 2), (){
-      final isUserLoggedIn =  _viewModel.isUserLoggedIn();
-      if(isUserLoggedIn){
-        _goToDashboard();
-      }else {
-        _goToLogin();
-      }
-    } );
-  }
 
   void _goToLogin(){
     Navigator.of(context).pushNamedAndRemoveUntil(Login.routeName, (route) => false);
@@ -51,11 +29,28 @@ class _SplashState extends State<Splash> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Image.asset('assets/graphics/fuse_machines.png'),
-      ),
-    );
+    // context.read<AuthenticationCubit>().handleUserLoggedIn();
+   return BlocListener<AuthenticationCubit, AuthenticationState>(
+     listener: (context, state) {
+      switch(state.runtimeType){
+        case AuthenticationLoggedIn: {
+          _goToDashboard();
+          break;
+        }
+        case AuthenticationLoggedOut: {
+          _goToLogin();
+          break;
+        }
+      }
+    }
+    ,child: Scaffold(
+        body: Center(
+          child: Image.asset('assets/graphics/fuse_machines.png'),
+        ),
+      ),);
+
   }
+
+
 
 }

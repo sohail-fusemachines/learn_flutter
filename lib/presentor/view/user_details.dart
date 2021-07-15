@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fusemachines_app_1/presentor/cubit/user_list/user_list_cubit.dart';
-import 'package:fusemachines_app_1/presentor/viewmodel/user_list_view_model.dart';
+
 import 'package:injectable/injectable.dart';
-import 'package:provider/provider.dart';
 
 @injectable
 class UserDetails extends StatefulWidget {
@@ -36,12 +35,12 @@ class _UserDetailsState extends State<UserDetails> {
             tag: 'userImage',
             child: Expanded(
               flex: 1,
-              child: Image.network(
-                (state as UserListItemClicked).user.avatar ,
+              child:   (state is UserListItemClicked) ? Image.network(
+                  state.user.avatar  ,
                 height: 300,
                 width: double.infinity,
                 fit: BoxFit.cover,
-              ),
+              ) : Text("Profile image not avilable."),
             ),
           ),
           width: double.infinity,
@@ -49,7 +48,7 @@ class _UserDetailsState extends State<UserDetails> {
         Container(
           margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
           child: Text(
-            "${state.user.firstName} ${state.user.lastName}",
+            (state is UserListItemClicked) ? "${state.user.firstName} ${state.user.lastName}" : "Not Avilable",
             textAlign: TextAlign.left,
             textScaleFactor: 2,
           ),
@@ -57,7 +56,7 @@ class _UserDetailsState extends State<UserDetails> {
         ),
         Container(
           margin: EdgeInsets.symmetric(horizontal: 8),
-          child: Text(state.user.email, textAlign: TextAlign.left),
+          child: Text( (state is UserListItemClicked) ? state.user.email : "Not Avilable", textAlign: TextAlign.left),
           width: double.infinity,
         ),
       ],

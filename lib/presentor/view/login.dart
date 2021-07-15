@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fusemachines_app_1/presentor/cubit/authentication/authentication_cubit.dart';
-import 'package:fusemachines_app_1/presentor/viewmodel/login_view_model.dart';
 import 'package:injectable/injectable.dart';
 
 import 'dashboard.dart';
@@ -10,29 +9,22 @@ import 'dashboard.dart';
 class Login extends StatefulWidget {
   static const routeName = "/login";
 
-  LoginViewModel _viewModel;
 
-  Login(this._viewModel);
 
   @override
-  State<StatefulWidget> createState() => _LoginState(_viewModel);
+  State<StatefulWidget> createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
-  LoginViewModel _viewModel;
-
-  bool _isLoading = false;
 
   var _usernameController = TextEditingController();
   var _passwordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
-  _LoginState(this._viewModel);
 
   void login(BuildContext context) {
     if (_formKey.currentState!.validate() == true) {
-      this._isLoading = true;
       context.read<AuthenticationCubit>().login(this._usernameController.text, this._passwordController.text);
     }
   }
@@ -112,8 +104,8 @@ class _LoginState extends State<Login> {
                   Container(
                       margin: EdgeInsets.symmetric(vertical: 8),
                       width: double.infinity,
-                      child: (_isLoading == false)
-                          ? MaterialButton(
+                      child:
+                           MaterialButton(
                               child: Text(
                                 "Login",
                                 style: TextStyle(color: Colors.white),
@@ -123,11 +115,7 @@ class _LoginState extends State<Login> {
                                 login(context);
                               },
                             )
-                          : Container(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(),
-                            ))
+                      )
                 ],
               ),
             ),
@@ -135,5 +123,7 @@ class _LoginState extends State<Login> {
         ),
       );
 
-  Widget _getLoadingUi() => Center(child: CircularProgressIndicator(),);
+  Widget _getLoadingUi() => Scaffold(
+    body: Center(child: CircularProgressIndicator(),)
+  );
 }
