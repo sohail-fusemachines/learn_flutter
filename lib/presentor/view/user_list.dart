@@ -75,16 +75,16 @@ class _UserListState extends State<UserList> {
           case UserListLoaded: {
             //TODO: Remove set state..
             //TODO: Handle pagination from cubit.
-            setState(() {
+
               this.listOfUsers.addAll((state as UserListLoaded).listOfUser);
-            });
+
 
             break;
           }
           case UserListNextPage: {
-            setState(() {
+
               this.listOfUsers.addAll((state as UserListNextPage).listOfUser);
-            });
+
             break;
           }
           }

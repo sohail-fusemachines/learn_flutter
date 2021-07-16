@@ -14,7 +14,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   AppRepository _repository;
 
-
   @override
   Stream<AuthenticationState> mapEventToState(
     AuthenticationEvent event,
@@ -33,9 +32,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
             _handleUserLoggedIn();
             break;
           }
-
         }
-
   }
 
 

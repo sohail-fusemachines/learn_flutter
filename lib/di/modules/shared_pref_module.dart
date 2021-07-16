@@ -7,6 +7,4 @@ abstract class SharedPreferencesModule{
   @preResolve
   @singleton
   Future<SharedPreferences> getSharedPreferences() async => await SharedPreferences.getInstance();
-
-
 }
