@@ -6,43 +6,44 @@ import 'package:injectable/injectable.dart';
 import 'package:meta/meta.dart';
 
 part 'authentication_event.dart';
+
 part 'authentication_state.dart';
 
 @injectable
-class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
+class AuthenticationBloc
+    extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationBloc(this._repository) : super(AuthenticationInitial());
 
   AppRepository _repository;
-
 
   @override
   Stream<AuthenticationState> mapEventToState(
     AuthenticationEvent event,
   ) async* {
-        switch(event.runtimeType){
-          case LoginEvent: {
-            final loginEvent = event as LoginEvent;
-            _login(loginEvent.userName , loginEvent.password );
-            break;
-          }
-          case LogoutEvent: {
-            _logOut();
-            break;
-          }
-          case HandlePreviouslyLoggedIn: {
-            _handleUserLoggedIn();
-            break;
-          }
-
+    switch (event.runtimeType) {
+      case LoginEvent:
+        {
+          final loginEvent = event as LoginEvent;
+          _login(loginEvent.userName, loginEvent.password);
+          break;
         }
-
+      case LogoutEvent:
+        {
+          _logOut();
+          break;
+        }
+      case HandlePreviouslyLoggedIn:
+        {
+          _handleUserLoggedIn();
+          break;
+        }
+    }
   }
 
-
-  void _handleUserLoggedIn() async{
+  void _handleUserLoggedIn() async {
     await Future.delayed(Duration(seconds: 3));
-    final token =  _repository.getToken();
-    if(token != null && token != ""){
+    final token = _repository.getToken();
+    if (token != null && token != "") {
       emit(AuthenticationLoggedIn());
     } else {
       emit(AuthenticationLoggedOut());
@@ -51,21 +52,22 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   void _login(String email, String password) {
     emit(AuthenticationLoading());
-    _repository.login(email, password).then((value)  {
+    _repository.login(email, password).then((value) {
       final token = value.token;
-      if(token != null && token != ""){
+      if (token != null && token != "") {
         emit(AuthenticationLoggedIn());
       }
 
       final error = value.error;
-      if(error != null && error != ""){
+      if (error != null && error != "") {
         emit(AuthenticationError(error));
       }
-
+    }).catchError((error) {
+      emit(AuthenticationError("Something went wrong."));
     });
   }
 
-  void _logOut(){
+  void _logOut() {
     _repository.clearPreferences();
     emit(AuthenticationLoggedOut());
   }

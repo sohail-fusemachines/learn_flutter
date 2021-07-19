@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fusemachines_app_1/presentor/bloc/authentication/authentication_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -9,24 +10,20 @@ import 'dashboard.dart';
 class Login extends StatefulWidget {
   static const routeName = "/login";
 
-
-
   @override
   State<StatefulWidget> createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
-
   var _usernameController = TextEditingController();
   var _passwordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
-
   void login(BuildContext context) {
     if (_formKey.currentState!.validate() == true) {
-      context.read<AuthenticationBloc>().add(LoginEvent(this._usernameController.text, this._passwordController.text));
-
+      context.read<AuthenticationBloc>().add(LoginEvent(
+          this._usernameController.text, this._passwordController.text));
     }
   }
 
@@ -39,11 +36,12 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) =>
       BlocConsumer<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {
-          switch(state.runtimeType){
-            case AuthenticationLoading: {
-              return _getLoadingUi();
-              break;
-            }
+          switch (state.runtimeType) {
+            case AuthenticationLoading:
+              {
+                return _getLoginUi(true);
+                break;
+              }
           }
           return _getLoginUi();
         },
@@ -59,12 +57,11 @@ class _LoginState extends State<Login> {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Text((state as AuthenticationError).message)));
               }
-
           }
         },
       );
 
-  Widget _getLoginUi() => Scaffold(
+  Widget _getLoginUi([bool isLoading = false]) => Scaffold(
         body: Container(
           margin: EdgeInsets.symmetric(horizontal: 34),
           child: Center(
@@ -102,21 +99,34 @@ class _LoginState extends State<Login> {
                       return null;
                     },
                   ),
-                  Container(
-                      margin: EdgeInsets.symmetric(vertical: 8),
-                      width: double.infinity,
-                      child:
-                           MaterialButton(
-                              child: Text(
-                                "Login",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              color: Colors.blueAccent,
-                              onPressed: () {
-                                login(context);
-                              },
-                            )
-                      )
+                  ConstrainedBox(
+                      constraints: BoxConstraints(minHeight: 48, maxHeight: 48),
+                      child: Container(
+                          margin: EdgeInsets.symmetric(vertical: 8),
+                          width: double.infinity,
+                          height: double.infinity,
+                          child: isLoading
+                              ? Align(
+                                  alignment: Alignment.center,
+                                  child: Wrap(
+                                    children: [
+                                      Container(
+                                          height: 16,
+                                          width: 16,
+                                          child: CircularProgressIndicator())
+                                    ],
+                                  ),
+                                )
+                              : MaterialButton(
+                                  child: Text(
+                                    "Login",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  color: Colors.blueAccent,
+                                  onPressed: () {
+                                    login(context);
+                                  },
+                                )))
                 ],
               ),
             ),
@@ -125,6 +135,7 @@ class _LoginState extends State<Login> {
       );
 
   Widget _getLoadingUi() => Scaffold(
-    body: Center(child: CircularProgressIndicator(),)
-  );
+          body: Center(
+        child: CircularProgressIndicator(),
+      ));
 }

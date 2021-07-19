@@ -25,9 +25,14 @@ class RemoteDataSourceImpl extends RemoteDataSource {
   Future<LoginResponse> login(String email, String password) {
     final Future<http.Response> response = http.post(
         Uri.parse(BASE_URL + LOGIN_ENDPOINT),
-        body: {"email": email, "password": password});
+        body: {"email": email, "password": password}).timeout(Duration(seconds: 10));
+
 
     return response
+        .then((value) {
+      // print("Login Response: ${value.body}");
+          return value;}
+    )
         .then((value) => LoginResponse.fromJson(jsonDecode(value.body)));
   }
 }
