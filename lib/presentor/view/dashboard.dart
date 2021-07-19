@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fusemachines_app_1/di/application_component.dart';
 import 'package:fusemachines_app_1/presentor/bloc/authentication/authentication_bloc.dart';
 import 'package:fusemachines_app_1/presentor/bloc/user_list/user_list_bloc.dart';
+import 'package:fusemachines_app_1/presentor/view/about.dart';
 
 import 'package:fusemachines_app_1/presentor/view/login.dart';
 import 'package:fusemachines_app_1/presentor/view/sidenav.dart';
@@ -28,7 +29,7 @@ class _DashboardState extends State<Dashboard> {
 
   final List<Widget> listOfWidgets = [
     getIt.get<UserList>(),
-    Text("This is profile")
+    getIt.get<About>()
   ];
 
   void _goToUserDetails() {
@@ -83,7 +84,7 @@ class _DashboardState extends State<Dashboard> {
           items: [
             BottomNavigationBarItem(
                 icon: Icon(Icons.home_sharp), label: "Home"),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+            BottomNavigationBarItem(icon: Icon(Icons.info), label: "About"),
           ],
           onTap: (selectedIndex) {
             setState(() {
