@@ -41,13 +41,13 @@ class RouteGenerator {
 
   Route<dynamic> _getPageRouteBuilderForWidget(Widget widget) {
     return PageRouteBuilder(
-      transitionDuration: Duration(milliseconds: 140),
+      transitionDuration: Duration(seconds: 1),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = Offset(1.0, 1.0);
 
         var end = Offset.zero;
         var tween = Tween(begin: begin, end: end);
-        // var offsetAnimation = animation.drive(tween);
+        animation.drive(tween);
       return FadeTransition(opacity: animation,
       child: child,);
       },

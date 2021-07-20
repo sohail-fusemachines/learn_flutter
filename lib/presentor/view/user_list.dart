@@ -104,9 +104,10 @@ class _UserListState extends State<UserList> with TickerProviderStateMixin {
                       BuildContext context,
                       int index,
                     ) {
+
                       return TweenAnimationBuilder(
                         curve: Curves.ease,
-                        duration: Duration(milliseconds: 250),
+                        duration: Duration(seconds: 2),
                         tween: Tween<double>(begin: 0.0, end: 1.0) ,
                         builder: (context, value, child) => Opacity(
                           opacity: value as double,
