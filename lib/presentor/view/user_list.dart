@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,8 +16,7 @@ class UserList extends StatefulWidget {
   }
 }
 
-class _UserListState extends State<UserList> {
-
+class _UserListState extends State<UserList> with TickerProviderStateMixin {
   UserListBloc get _userListBloc => super.context.read<UserListBloc>();
 
   List<User> listOfUsers = [];
@@ -64,36 +62,37 @@ class _UserListState extends State<UserList> {
   @override
   Widget build(BuildContext context) =>
       BlocConsumer<UserListBloc, UserListState>(builder: (context, state) {
-        switch(state.runtimeType){
-          case UserListLoading: {
-            return this.showProgressIndicator();
-          }
+        Widget? _widgetToShow;
+        switch (state.runtimeType) {
+          case UserListLoading:
+            {
+              _widgetToShow = this.showProgressIndicator();
+            }
         }
-        return this.showMainBody(context);
-      },listener: (context, state) {
-        switch(state.runtimeType){
-          case UserListLoaded: {
-            //TODO: Remove set state..
-            //TODO: Handle pagination from cubit.
-            setState(() {
+        _widgetToShow = this.showMainBody(context);
+
+        return AnimatedSwitcher(
+            duration: Duration(milliseconds: 140), child: _widgetToShow);
+      }, listener: (context, state) {
+        switch (state.runtimeType) {
+          case UserListLoaded:
+            {
               this.listOfUsers.addAll((state as UserListLoaded).listOfUser);
-            });
-
+              break;
+            }
+          case UserListNextPage:
+            {
+              final listOfUserFromState =
+                  (state as UserListNextPage).listOfUser;
+              this.listOfUsers.addAll(listOfUserFromState);
+            }
             break;
-          }
-          case UserListNextPage: {
-            setState(() {
-              this.listOfUsers.addAll((state as UserListNextPage).listOfUser);
-            });
-            break;
-          }
-          }
         }
-      );
-          // this.isLoading ? this.showProgressIndicator() : this.showMainBody(value)));
+      });
 
+  // this.isLoading ? this.showProgressIndicator() : this.showMainBody(value)));
 
-  Widget showMainBody(BuildContext context ) => Container(
+  Widget showMainBody(BuildContext context) => Container(
         padding: EdgeInsets.all(8),
         child: Column(
           children: <Widget>[
@@ -101,29 +100,28 @@ class _UserListState extends State<UserList> {
                 flex: 1,
                 child: RefreshIndicator(
                   child: ListView.builder(
-                    itemBuilder: (BuildContext context, int index) {
-                      return getUserCard(listOfUsers[index], context);
+                    itemBuilder: (
+                      BuildContext context,
+                      int index,
+                    ) {
+                      return TweenAnimationBuilder(
+                        curve: Curves.ease,
+                        duration: Duration(milliseconds: 250),
+                        tween: Tween<double>(begin: 0.0, end: 1.0) ,
+                        builder: (context, value, child) => Opacity(
+                          opacity: value as double,
+                          child: child,
+                        ),
+                        child: getUserCard(this.listOfUsers[index], context),
+                      );
                     },
-                    itemCount: listOfUsers.length,
+                    itemCount: this.listOfUsers.length,
                     controller: _scrollController,
                   ),
                   onRefresh: () async {
-                     _userListBloc.add(GetUserListEvent());
+                    _userListBloc.add(GetUserListEvent());
                   },
                 )),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Column(
-                children: [
-                  if (listOfUsers.isEmpty)
-                    getButtonThatMatchParent("Fetch Users", () {
-                      fetchListOfUsers();
-                    }),
-                  if (listOfUsers.isEmpty != true)
-                    getButtonThatMatchParent("Clear", clearUserList)
-                ],
-              ),
-            )
           ],
         ),
       );
@@ -133,43 +131,44 @@ class _UserListState extends State<UserList> {
       child: GestureDetector(
         onTap: () {
           context?.read<UserListBloc>().add(SelectUserEvent(user));
-
         },
         child: Card(
+            elevation: 4,
             child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Hero(
-            tag: 'userImage',
-            child: Expanded(
-              flex: 1,
-              child: Image.network(user.avatar),
-            ),
-          ),
-          Expanded(
-              child: Container(
-                margin: EdgeInsets.fromLTRB(8, 8, 8, 8),
-                child: Column(children: [
-                  Container(
-                      width: double.infinity,
-                      margin: EdgeInsets.fromLTRB(0, 4, 0, 0),
-                      child: Text(
-                        "${user.firstName} ${user.lastName}",
-                        textAlign: TextAlign.left,
-                        textScaleFactor: 1.2,
-                        style: TextStyle(color: Colors.black.withOpacity(1.0)),
-                      )),
-                  Container(
-                    width: double.infinity,
-                    margin: EdgeInsets.fromLTRB(0, 2, 0, 0),
-                    child: Text(
-                      "${user.email}",
-                      textAlign: TextAlign.left,
-                      style: TextStyle(fontStyle: FontStyle.italic),
-                    ),
-                  ),
-                ]),
+              Hero(
+                tag: user.avatar,
+                child: Expanded(
+                  flex: 1,
+                  child: Image.network(user.avatar),
+                ),
               ),
-              flex: 3)
-        ])),
+              Expanded(
+                  child: Container(
+                    margin: EdgeInsets.fromLTRB(8, 8, 8, 8),
+                    child: Column(children: [
+                      Container(
+                          width: double.infinity,
+                          margin: EdgeInsets.fromLTRB(0, 4, 0, 0),
+                          child: Text(
+                            "${user.firstName} ${user.lastName}",
+                            textAlign: TextAlign.left,
+                            textScaleFactor: 1.2,
+                            style:
+                                TextStyle(color: Colors.black.withOpacity(1.0)),
+                          )),
+                      Container(
+                        width: double.infinity,
+                        margin: EdgeInsets.fromLTRB(0, 2, 0, 0),
+                        child: Text(
+                          "${user.email}",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(fontStyle: FontStyle.italic),
+                        ),
+                      ),
+                    ]),
+                  ),
+                  flex: 3)
+            ])),
       ));
 
   Widget getButtonThatMatchParent(String text,

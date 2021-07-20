@@ -5,7 +5,6 @@ import 'package:fusemachines_app_1/di/application_component.dart';
 import 'package:fusemachines_app_1/presentor/bloc/authentication/authentication_bloc.dart';
 import 'package:fusemachines_app_1/presentor/bloc/user_list/user_list_bloc.dart';
 import 'package:fusemachines_app_1/presentor/view/about.dart';
-
 import 'package:fusemachines_app_1/presentor/view/login.dart';
 import 'package:fusemachines_app_1/presentor/view/sidenav.dart';
 import 'package:fusemachines_app_1/presentor/view/user_details.dart';
@@ -16,7 +15,6 @@ import 'package:provider/provider.dart';
 @injectable
 class Dashboard extends StatefulWidget {
   static const routeName = "/dashboard";
-
 
   @override
   State<StatefulWidget> createState() {
@@ -36,41 +34,40 @@ class _DashboardState extends State<Dashboard> {
     Navigator.of(context).pushNamed(UserDetails.routeName);
   }
 
-  void _logOut(){
-    Navigator.of(context).pushNamedAndRemoveUntil(Login.routeName, (route) => false);
+  void _logOut() {
+    Navigator.of(context)
+        .pushNamedAndRemoveUntil(Login.routeName, (route) => false);
   }
-
-
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(child: _getDashboardView(), listeners: [
-      BlocListener<UserListBloc, UserListState>(
-        listener: (context, state) {
-        switch (state.runtimeType) {
-          case UserListItemClicked:
-            {
-              _goToUserDetails();
-              break;
-            }
-        }
-      }),
-      BlocListener<AuthenticationBloc, AuthenticationState>(
-          listener: (context, state) {
-            switch (state.runtimeType) {
-              case AuthenticationLoggedOut:
-                {
-                  _logOut();
-                  break;
-                }
-            }
-          }),
-    ],);
-
+    return MultiBlocListener(
+      child: _getDashboardView(),
+      listeners: [
+        BlocListener<UserListBloc, UserListState>(listener: (context, state) {
+          switch (state.runtimeType) {
+            case UserListItemClicked:
+              {
+                _goToUserDetails();
+                break;
+              }
+          }
+        }),
+        BlocListener<AuthenticationBloc, AuthenticationState>(
+            listener: (context, state) {
+          switch (state.runtimeType) {
+            case AuthenticationLoggedOut:
+              {
+                _logOut();
+                break;
+              }
+          }
+        }),
+      ],
+    );
   }
 
-  Widget _getDashboardView() =>
-      Scaffold(
+  Widget _getDashboardView() => Scaffold(
         drawer: Sidenav(
           onLogoutCallback: () {
             context.read<AuthenticationBloc>().add(LogoutEvent());
@@ -79,9 +76,14 @@ class _DashboardState extends State<Dashboard> {
         appBar: AppBar(
           title: const Text("Fusemachines app"),
         ),
-        body: listOfWidgets[_selectedBottomSheetIndex],
+        body: AnimatedSwitcher(
+          child: listOfWidgets[_selectedBottomSheetIndex],
+          duration: Duration(milliseconds: 120),
+        ),
         bottomNavigationBar: BottomNavigationBar(
-          items: [
+          unselectedItemColor: Colors.lightBlue,
+          type: BottomNavigationBarType.shifting,
+          items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
                 icon: Icon(Icons.home_sharp), label: "Home"),
             BottomNavigationBarItem(icon: Icon(Icons.info), label: "About"),
@@ -91,9 +93,8 @@ class _DashboardState extends State<Dashboard> {
               _selectedBottomSheetIndex = selectedIndex;
             });
           },
+          selectedItemColor: Colors.blue,
           currentIndex: _selectedBottomSheetIndex,
         ),
       );
-
-
 }

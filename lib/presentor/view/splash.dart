@@ -8,8 +8,7 @@ import 'package:injectable/injectable.dart';
 
 @injectable
 class Splash extends StatefulWidget {
-  static const String routeName ="/splash";
-
+  static const String routeName = "/splash";
 
   @override
   State<StatefulWidget> createState() {
@@ -18,38 +17,54 @@ class Splash extends StatefulWidget {
 }
 
 class _SplashState extends State<Splash> {
-
-  void _goToLogin(){
-    Navigator.of(context).pushNamedAndRemoveUntil(Login.routeName, (route) => false);
+  void _goToLogin() {
+    Navigator.of(context)
+        .pushNamedAndRemoveUntil(Login.routeName, (route) => false);
   }
 
-  void _goToDashboard(){
-    Navigator.of(context).pushNamedAndRemoveUntil(Dashboard.routeName, (route) => false);
+  void _goToDashboard() {
+    Navigator.of(context)
+        .pushNamedAndRemoveUntil(Dashboard.routeName, (route) => false);
   }
 
   @override
   Widget build(BuildContext context) {
-   return BlocListener<AuthenticationBloc, AuthenticationState>(
-     listener: (context, state) {
-      switch(state.runtimeType){
-        case AuthenticationLoggedIn: {
-          _goToDashboard();
-          break;
+    return BlocListener<AuthenticationBloc, AuthenticationState>(
+      listener: (context, state) {
+        switch (state.runtimeType) {
+          case AuthenticationLoggedIn:
+            {
+              _goToDashboard();
+              break;
+            }
+          case AuthenticationLoggedOut:
+            {
+              _goToLogin();
+              break;
+            }
         }
-        case AuthenticationLoggedOut: {
-          _goToLogin();
-          break;
-        }
-      }
-    }
-    ,child: Scaffold(
+      },
+      child: Scaffold(
         body: Center(
-          child: Image.asset('assets/graphics/fuse_machines.png'),
+          child: Stack(
+            children: [
+              Center(
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 8),
+                  child: Hero(tag: "fusemachines_image", child:Image.asset('assets/graphics/fuse_machines.png') ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  width: double.infinity,
+                  child: LinearProgressIndicator(minHeight: 8,),
+                ),
+              )
+            ],
+          ),
         ),
-      ),);
-
+      ),
+    );
   }
-
-
-
 }

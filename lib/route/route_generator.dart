@@ -15,29 +15,52 @@ class RouteGenerator {
   Route<dynamic>? getRouteGenerator(RouteSettings settings) {
     switch (settings.name) {
       case Dashboard.routeName:
-        return MaterialPageRoute(
-            builder: (_) => SafeArea(child: getIt.get<Dashboard>()));
+        return _getPageRouteBuilderForWidget(
+            getIt.get<Dashboard>())
+        ;
       case Splash.routeName:
-        return MaterialPageRoute(
-            builder: (_) => SafeArea(child: getIt<Splash>()));
+        return _getPageRouteBuilderForWidget(
+            getIt<Splash>());
 
       case UserList.routeName:
-        return MaterialPageRoute(
-            builder: (_) => SafeArea(
-                  child: getIt<UserList>(),
-                ));
+        return _getPageRouteBuilderForWidget(
+          getIt<UserList>(),
+        );
 
       case UserDetails.routeName:
         {
-            return MaterialPageRoute(
-              builder: (_) => SafeArea(
-                  child: getIt<UserDetails>(),
-              )
-            );
+          return _getPageRouteBuilderForWidget(
+              getIt<UserDetails>()
+          );
         }
 
       case Login.routeName:
         return MaterialPageRoute(builder: (_) => getIt.get<Login>());
     }
+  }
+
+  Route<dynamic> _getPageRouteBuilderForWidget(Widget widget) {
+    return PageRouteBuilder(
+      transitionDuration: Duration(milliseconds: 140),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(1.0, 1.0);
+
+        var end = Offset.zero;
+        var tween = Tween(begin: begin, end: end);
+        // var offsetAnimation = animation.drive(tween);
+      return FadeTransition(opacity: animation,
+      child: child,);
+      },
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          SafeArea(child: widget));
+  }
+
+  Route<dynamic> _getMaterialRoute(Widget widget) {
+    return MaterialPageRoute(
+        builder: (_) =>
+            SafeArea(
+              child: widget,
+            )
+    );
   }
 }

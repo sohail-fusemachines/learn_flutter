@@ -39,6 +39,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         initialRoute: Splash.routeName,
+
         onGenerateRoute: _routeGenerator.getRouteGenerator,
       ),
     );

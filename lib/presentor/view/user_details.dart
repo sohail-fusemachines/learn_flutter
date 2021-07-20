@@ -31,7 +31,7 @@ class _UserDetailsState extends State<UserDetails> {
       children: [
         Container(
           child: Hero(
-            tag: 'userImage',
+            tag: (state as UserListItemClicked).user.avatar,
             child: Expanded(
               flex: 1,
               child:   (state is UserListItemClicked) ? Image.network(
