@@ -104,11 +104,10 @@ class _UserListState extends State<UserList> with TickerProviderStateMixin {
                       BuildContext context,
                       int index,
                     ) {
-
                       return TweenAnimationBuilder(
                         curve: Curves.ease,
                         duration: Duration(seconds: 2),
-                        tween: Tween<double>(begin: 0.0, end: 1.0) ,
+                        tween: Tween<double>(begin: 0.0, end: 1.0),
                         builder: (context, value, child) => Opacity(
                           opacity: value as double,
                           child: child,
@@ -140,7 +139,11 @@ class _UserListState extends State<UserList> with TickerProviderStateMixin {
                 tag: user.avatar,
                 child: Expanded(
                   flex: 1,
-                  child: Image.network(user.avatar),
+                  child: AnimatedContainer(
+                    duration: Duration(seconds: 1),
+                    curve: Curves.bounceIn,
+                    child: Image.network(user.avatar),
+                  ),
                 ),
               ),
               Expanded(

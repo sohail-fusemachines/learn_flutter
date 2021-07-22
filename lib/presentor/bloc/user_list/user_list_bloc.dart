@@ -30,7 +30,9 @@ class UserListBloc extends Bloc<UserListEvent, UserListState> {
           break;
         }
         case NextPageEvent:{
-          _getNextPageOfUsers();
+
+            _getNextPageOfUsers();
+
           break;
         }
       }
@@ -56,7 +58,10 @@ class UserListBloc extends Bloc<UserListEvent, UserListState> {
           }
         case UserListLoaded:
           {
-            emit(UserListNextPage(value));
+
+              emit(UserListNextPage(value));
+
+
             break;
           }
         default:
