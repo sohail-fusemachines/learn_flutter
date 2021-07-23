@@ -31,18 +31,14 @@ class _SplashState extends State<Splash> {
   Widget build(BuildContext context) {
     return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
-        switch (state.runtimeType) {
-          case AuthenticationLoggedIn:
-            {
+        state.maybeWhen(
+            orElse: () {},
+            loggedIn: () {
               _goToDashboard();
-              break;
-            }
-          case AuthenticationLoggedOut:
-            {
+            },
+            logOut: () {
               _goToLogin();
-              break;
-            }
-        }
+            });
       },
       child: Scaffold(
         body: Center(
@@ -51,14 +47,18 @@ class _SplashState extends State<Splash> {
               Center(
                 child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 8),
-                  child: Hero(tag: "fusemachines_image", child:Image.asset('assets/graphics/fuse_machines.png') ),
+                  child: Hero(
+                      tag: "fusemachines_image",
+                      child: Image.asset('assets/graphics/fuse_machines.png')),
                 ),
               ),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(
                   width: double.infinity,
-                  child: LinearProgressIndicator(minHeight: 8,),
+                  child: LinearProgressIndicator(
+                    minHeight: 8,
+                  ),
                 ),
               )
             ],

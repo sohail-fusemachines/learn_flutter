@@ -1,12 +1,10 @@
 part of 'user_list_bloc.dart';
 
-@immutable
-abstract class UserListEvent {}
+@freezed
+class UserListEvent with _$UserListEvent {
+  factory UserListEvent.getUserList() = _GetUserList;
+  factory UserListEvent.selectUser(User user) = _SelectUser;
+  factory UserListEvent.getNextPage() = _GetNextPage;
 
-class GetUserListEvent extends UserListEvent{}
-class SelectUserEvent extends UserListEvent{
-  User _user;
-  User get user => _user;
-  SelectUserEvent(this._user);
 }
-class NextPageEvent extends UserListEvent{}
+

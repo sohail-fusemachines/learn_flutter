@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 abstract class SharedPreferencesModule{
   @preResolve
   @singleton
-  @SharedPrefs
   Future<SharedPreferences> getSharedPreferences() async => await SharedPreferences.getInstance();
 
 

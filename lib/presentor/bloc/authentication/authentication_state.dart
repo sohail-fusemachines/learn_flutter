@@ -1,14 +1,10 @@
 part of 'authentication_bloc.dart';
 
-@immutable
-abstract class AuthenticationState {}
-
-class AuthenticationInitial extends AuthenticationState {}
-class AuthenticationLoading extends AuthenticationState {}
-class AuthenticationLoggedIn extends AuthenticationState {}
-class AuthenticationError extends AuthenticationState {
-  final String _message;
-  String get message => _message;
-  AuthenticationError(this._message);
+@freezed
+class AuthenticationState with _$AuthenticationState {
+    const factory AuthenticationState.initial() = _Initial;
+    const factory AuthenticationState.loading() = _Loading;
+    const factory AuthenticationState.loggedIn() = _LoggedIn;
+    const factory AuthenticationState.error(String message) = _Error;
+    const factory AuthenticationState.logOut() = _LogOut;
 }
-class AuthenticationLoggedOut extends AuthenticationState {}

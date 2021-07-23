@@ -34,11 +34,11 @@ class _UserListState extends State<UserList> with TickerProviderStateMixin {
   }
 
   void fetchListOfUsers() {
-    _userListBloc.add(GetUserListEvent());
+    _userListBloc.add(UserListEvent.getUserList());
   }
 
   void fetchNextPageOfUsers() {
-    _userListBloc.add(NextPageEvent());
+    _userListBloc.add(UserListEvent.getNextPage());
   }
 
   void showLoading() {
@@ -62,35 +62,20 @@ class _UserListState extends State<UserList> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) =>
       BlocConsumer<UserListBloc, UserListState>(builder: (context, state) {
-        Widget? _widgetToShow;
-        switch (state.runtimeType) {
-          case UserListLoading:
-            {
-              _widgetToShow = this.showProgressIndicator();
-            }
-        }
-        _widgetToShow = this.showMainBody(context);
+        Widget? _widgetToShow = state.maybeMap(
+            loading: (value) => this.showProgressIndicator(),
+            orElse: () => this.showMainBody(context));
 
         return AnimatedSwitcher(
             duration: Duration(milliseconds: 140), child: _widgetToShow);
       }, listener: (context, state) {
-        switch (state.runtimeType) {
-          case UserListLoaded:
-            {
-              this.listOfUsers.addAll((state as UserListLoaded).listOfUser);
-              break;
-            }
-          case UserListNextPage:
-            {
-              final listOfUserFromState =
-                  (state as UserListNextPage).listOfUser;
-              this.listOfUsers.addAll(listOfUserFromState);
-            }
-            break;
-        }
+        state.maybeWhen(
+            loaded: (listOfUsers) => this.listOfUsers.addAll(listOfUsers),
+            nextPage: (listOfUsers) => this.listOfUsers.addAll(listOfUsers),
+            orElse: () {});
       });
 
-  // this.isLoading ? this.showProgressIndicator() : this.showMainBody(value)));
+
 
   Widget showMainBody(BuildContext context) => Container(
         padding: EdgeInsets.all(8),
@@ -119,7 +104,7 @@ class _UserListState extends State<UserList> with TickerProviderStateMixin {
                     controller: _scrollController,
                   ),
                   onRefresh: () async {
-                    _userListBloc.add(GetUserListEvent());
+                    _userListBloc.add(UserListEvent.getUserList());
                   },
                 )),
           ],
@@ -130,7 +115,7 @@ class _UserListState extends State<UserList> with TickerProviderStateMixin {
       margin: EdgeInsets.fromLTRB(0, 0, 0, 4),
       child: GestureDetector(
         onTap: () {
-          context?.read<UserListBloc>().add(SelectUserEvent(user));
+          context?.read<UserListBloc>().add(UserListEvent.selectUser(user));
         },
         child: Card(
             elevation: 4,

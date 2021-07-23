@@ -45,23 +45,18 @@ class _DashboardState extends State<Dashboard> {
       child: _getDashboardView(),
       listeners: [
         BlocListener<UserListBloc, UserListState>(listener: (context, state) {
-          switch (state.runtimeType) {
-            case UserListItemClicked:
-              {
-                _goToUserDetails();
-                break;
-              }
-          }
+          state.maybeWhen(
+            orElse: () {},
+            onClick: (user) => _goToUserDetails(),
+          );
         }),
         BlocListener<AuthenticationBloc, AuthenticationState>(
             listener: (context, state) {
-          switch (state.runtimeType) {
-            case AuthenticationLoggedOut:
-              {
-                _logOut();
-                break;
-              }
-          }
+              state.maybeWhen(
+                logOut: (){
+                  _logOut();
+                },
+                  orElse: (){});
         }),
       ],
     );

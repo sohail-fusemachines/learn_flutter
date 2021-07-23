@@ -37,40 +37,31 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) =>
       BlocConsumer<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {
-          switch (state.runtimeType) {
-            case AuthenticationLoading:
-            case AuthenticationLoggedIn:
-              {
-                return _getLoginUi(true);
-              }
-
-          }
-          return _getLoginUi();
+          return state.maybeMap(
+              loading: (value) => _getLoginUi(),
+              loggedIn: (value) => _getLoginUi(true),
+              orElse: () => _getLoginUi());
         },
         listener: (context, state) {
-          switch (state.runtimeType) {
-            case AuthenticationLoggedIn:
-              {
-                goToDashboard();
-                break;
-              }
-            case AuthenticationError:
-              {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text((state as AuthenticationError).message)));
-              }
-          }
+          state.maybeWhen(orElse: () {},
+            loggedIn: () {
+              goToDashboard();
+            },
+            error: (message) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text(message)));
+            },);
         },
       );
 
-  Widget _getLoginUi([bool isLoading = false]) => Scaffold(
+  Widget _getLoginUi([bool isLoading = false]) =>
+      Scaffold(
         body: Container(
           margin: EdgeInsets.symmetric(horizontal: 34),
           child: Center(
             child: Form(
               key: _formKey,
               child: Column(
-
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
@@ -98,7 +89,6 @@ class _LoginState extends State<Login> {
                   Container(
                       child: TextFormField(
                         obscureText: true,
-
                         decoration: InputDecoration(labelText: "Password"),
                         controller: _passwordController,
                         validator: (value) {
@@ -112,33 +102,34 @@ class _LoginState extends State<Login> {
                   Container(
                     child: ConstrainedBox(
                         constraints:
-                            BoxConstraints(minHeight: 48, maxHeight: 48),
+                        BoxConstraints(minHeight: 48, maxHeight: 48),
                         child: Container(
                             margin: EdgeInsets.symmetric(vertical: 8),
                             width: double.infinity,
                             height: double.infinity,
                             child: isLoading
                                 ? Align(
-                                    alignment: Alignment.center,
-                                    child: Wrap(
-                                      children: [
-                                        Container(
-                                            height: 80,
-                                            width: 160,
-                                            child: Lottie.asset("assets/lottie/loading-lottie.json"))
-                                      ],
-                                    ),
-                                  )
+                              alignment: Alignment.center,
+                              child: Wrap(
+                                children: [
+                                  Container(
+                                      height: 80,
+                                      width: 160,
+                                      child: Lottie.asset(
+                                          "assets/lottie/loading-lottie.json"))
+                                ],
+                              ),
+                            )
                                 : MaterialButton(
-                                    child: Text(
-                                      "Login",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    color: Colors.blueAccent,
-                                    onPressed: () {
-                                      login(context);
-                                    },
-                                  ))),
+                              child: Text(
+                                "Login",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              color: Colors.blueAccent,
+                              onPressed: () {
+                                login(context);
+                              },
+                            ))),
                     margin: EdgeInsets.symmetric(vertical: 8),
                   )
                 ],
@@ -148,8 +139,9 @@ class _LoginState extends State<Login> {
         ),
       );
 
-  Widget _getLoadingUi() => Scaffold(
+  Widget _getLoadingUi() =>
+      Scaffold(
           body: Center(
-        child: CircularProgressIndicator(),
-      ));
+            child: CircularProgressIndicator(),
+          ));
 }
