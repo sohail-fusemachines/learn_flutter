@@ -23,8 +23,7 @@ class _LoginState extends State<Login> {
 
   void login(BuildContext context) {
     if (_formKey.currentState!.validate() == true) {
-      context.read<AuthenticationBloc>().add(LoginEvent(
-          this._usernameController.text, this._passwordController.text));
+      context.read<AuthenticationBloc>().add(AuthenticationEvent.logIn(this._usernameController.text, this._passwordController.text));
     }
   }
 

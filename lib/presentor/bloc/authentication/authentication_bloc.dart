@@ -6,15 +6,18 @@ import 'package:fusemachines_app_1/repository/app_repository.dart';
 import 'package:injectable/injectable.dart';
 import 'package:meta/meta.dart';
 
+part 'authentication_bloc.freezed.dart';
+
 part 'authentication_event.dart';
 
 part 'authentication_state.dart';
-part 'authentication_bloc.freezed.dart';
 
 @injectable
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
-  AuthenticationBloc(this._repository) : super(AuthenticationState.initial());
+  AuthenticationBloc(this._repository) : super(AuthenticationState.initial()){
+    add(AuthenticationEvent.handlePreviouslyLoggedIn());
+  }
 
   AppRepository _repository;
 
@@ -22,24 +25,17 @@ class AuthenticationBloc
   Stream<AuthenticationState> mapEventToState(
     AuthenticationEvent event,
   ) async* {
-    switch (event.runtimeType) {
-      case LoginEvent:
-        {
-          final loginEvent = event as LoginEvent;
-          _login(loginEvent.userName, loginEvent.password);
-          break;
-        }
-      case LogoutEvent:
-        {
+    event.maybeWhen(
+        orElse: () {},
+        logIn: (userName, password) {
+          _login(userName, password);
+        },
+        logOut: () {
           _logOut();
-          break;
-        }
-      case HandlePreviouslyLoggedIn:
-        {
+        },
+        handlePreviouslyLoggedIn: () {
           _handleUserLoggedIn();
-          break;
-        }
-    }
+        });
   }
 
   void _handleUserLoggedIn() async {

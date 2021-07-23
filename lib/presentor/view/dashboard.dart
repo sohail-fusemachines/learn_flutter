@@ -65,7 +65,7 @@ class _DashboardState extends State<Dashboard> {
   Widget _getDashboardView() => Scaffold(
         drawer: Sidenav(
           onLogoutCallback: () {
-            context.read<AuthenticationBloc>().add(LogoutEvent());
+            context.read<AuthenticationBloc>().add(AuthenticationEvent.logOut());
           },
         ),
         appBar: AppBar(
